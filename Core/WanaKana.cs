@@ -33,7 +33,7 @@ namespace WanaKanaSharp
 {
 	public static class WanaKana
 	{
-		public enum TokenType
+		enum TokenType
 		{
 			Unknown,
 			Romaji,
@@ -247,13 +247,13 @@ namespace WanaKanaSharp
 			do
 			{
 				Int32 start = position;
-				TokenType type = GetType(input[position]);
+				TokenType type = GetTokenType(input[position]);
 
 				do
 				{
 					position++;
 					if (!(position < input.Length)) break;
-				} while (GetType(input[position]) == type);
+				} while (GetTokenType(input[position]) == type);
 
 				tokens.Add(input.Substring(start, position - start));
 				Console.WriteLine(input.Substring(start, position - start));
@@ -289,7 +289,7 @@ namespace WanaKanaSharp
 			throw new NotImplementedException("WanaKana.Unbind() not yet implemented!");
 		}
 
-		static TokenType GetType(Char input)
+		static TokenType GetTokenType(Char input)
 		{
 			if (IsRomaji(input)) return TokenType.Romaji;
 			if (IsHiragana(input)) return TokenType.Hiragana;
