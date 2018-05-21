@@ -75,59 +75,59 @@ namespace WanaKanaSharp
 		const Char ProlongedSoundMark = '\u30FC';
 		const Char KanaSlashDot = '\u30FB';
 
-		static Tuple<Char, Char> ZenkakuNumbers;
-		static Tuple<Char, Char> ZenkakuUppercase;
-		static Tuple<Char, Char> ZenkakuLowercase;
-		static Tuple<Char, Char> ZenkakuPunctuation1;
-		static Tuple<Char, Char> ZenkakuPunctuation2;
-		static Tuple<Char, Char> ZenkakuPunctuation3;
-		static Tuple<Char, Char> ZenkakuPunctuation4;
-		static Tuple<Char, Char> ZenkakuSymbolsCurrency;
+		static (Char Start, Char End) ZenkakuNumbers;
+		static (Char Start, Char End) ZenkakuUppercase;
+		static (Char Start, Char End) ZenkakuLowercase;
+		static (Char Start, Char End) ZenkakuPunctuation1;
+		static (Char Start, Char End) ZenkakuPunctuation2;
+		static (Char Start, Char End) ZenkakuPunctuation3;
+		static (Char Start, Char End) ZenkakuPunctuation4;
+		static (Char Start, Char End) ZenkakuSymbolsCurrency;
 
-		static Tuple<Char, Char> HiraganaCharacters;
-		static Tuple<Char, Char> KatakanaCharacters;
-		static Tuple<Char, Char> HankakuKatakana;
-		static Tuple<Char, Char> KatakanaPunctuation;
-		static Tuple<Char, Char> KanaPunctuation;
-		static Tuple<Char, Char> CJKSymbolsPunctuation;
-		static Tuple<Char, Char> CommonCJK;
-		static Tuple<Char, Char> RareCJK;
+		static (Char Start, Char End) HiraganaCharacters;
+		static (Char Start, Char End) KatakanaCharacters;
+		static (Char Start, Char End) HankakuKatakana;
+		static (Char Start, Char End) KatakanaPunctuation;
+		static (Char Start, Char End) KanaPunctuation;
+		static (Char Start, Char End) CJKSymbolsPunctuation;
+		static (Char Start, Char End) CommonCJK;
+		static (Char Start, Char End) RareCJK;
 
-		static Tuple<Char, Char>[] KanaRanges;
+		static (Char Start, Char End)[] KanaRanges;
 
-		static Tuple<Char, Char>[] JapanesePunctuationRanges;
+		static (Char Start, Char End)[] JapanesePunctuationRanges;
 
-		static Tuple<Char, Char>[] JapaneseRanges;
+		static (Char Start, Char End)[] JapaneseRanges;
 
-		static Tuple<Char, Char> ModernEnglish;
+		static (Char Start, Char End) ModernEnglish;
 
-		static Tuple<Char, Char>[] HepburnMacronRanges;
+		static (Char Start, Char End)[] HepburnMacronRanges;
 
-		static Tuple<Char, Char>[] SmartQuoteRanges;
+		static (Char Start, Char End)[] SmartQuoteRanges;
 
-		static Tuple<Char, Char>[] RomajiRanges;
+		static (Char Start, Char End)[] RomajiRanges;
 
-		static Tuple<Char, Char>[] EnglishPunctuationRanges;
+		static (Char Start, Char End)[] EnglishPunctuationRanges;
 
 		static WanaKana()
 		{
-			ZenkakuNumbers = Tuple.Create('\uFF10', '\uFF19');
-			ZenkakuUppercase = Tuple.Create(ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
-			ZenkakuLowercase = Tuple.Create(ZenkakuLowercaseStart, ZenkakuLowercaseEnd);
-			ZenkakuPunctuation1 = Tuple.Create('\uFF01', '\uFF0F');
-			ZenkakuPunctuation2 = Tuple.Create('\uFF1A', '\uFF1F');
-			ZenkakuPunctuation3 = Tuple.Create('\uFF3B', '\uFF3F');
-			ZenkakuPunctuation4 = Tuple.Create('\uFF5B', '\uFF60');
-			ZenkakuSymbolsCurrency = Tuple.Create('\uFFE0', '\uFFEE');
+			ZenkakuNumbers = ('\uFF10', '\uFF19');
+			ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
+			ZenkakuLowercase = (ZenkakuLowercaseStart, ZenkakuLowercaseEnd);
+			ZenkakuPunctuation1 = ('\uFF01', '\uFF0F');
+			ZenkakuPunctuation2 = ('\uFF1A', '\uFF1F');
+			ZenkakuPunctuation3 = ('\uFF3B', '\uFF3F');
+			ZenkakuPunctuation4 = ('\uFF5B', '\uFF60');
+			ZenkakuSymbolsCurrency = ('\uFFE0', '\uFFEE');
 
-			HiraganaCharacters = Tuple.Create('\u3040', '\u309F');
-			KatakanaCharacters = Tuple.Create('\u30A0', '\u30FF');
-			HankakuKatakana = Tuple.Create('\uFF66', '\uFF9F');
-			KatakanaPunctuation = Tuple.Create('\u30FB', '\u30FC');
-			KanaPunctuation = Tuple.Create('\uFF61', '\uFF65');
-			CJKSymbolsPunctuation = Tuple.Create('\u3000', '\u303F');
-			CommonCJK = Tuple.Create('\u4E00', '\u9FFF');
-			RareCJK = Tuple.Create('\u3400', '\u4DBF');
+			HiraganaCharacters = ('\u3040', '\u309F');
+			KatakanaCharacters = ('\u30A0', '\u30FF');
+			HankakuKatakana = ('\uFF66', '\uFF9F');
+			KatakanaPunctuation = ('\u30FB', '\u30FC');
+			KanaPunctuation = ('\uFF61', '\uFF65');
+			CJKSymbolsPunctuation = ('\u3000', '\u303F');
+			CommonCJK = ('\u4E00', '\u9FFF');
+			RareCJK = ('\u3400', '\u4DBF');
 
 			KanaRanges = new[] {
 				HiraganaCharacters,
@@ -159,21 +159,21 @@ namespace WanaKanaSharp
 			JapaneseRanges = JapaneseRanges.Concat(KanaRanges).ToArray();
 			JapaneseRanges = JapaneseRanges.Concat(JapanesePunctuationRanges).ToArray();
 
-			ModernEnglish = Tuple.Create('\u0000', '\u007F');
+			ModernEnglish = ('\u0000', '\u007F');
 
 			HepburnMacronRanges = new[]
 			{
-				Tuple.Create('\u0100', '\u0101'),
-				Tuple.Create('\u0112', '\u0113'),
-				Tuple.Create('\u012A', '\u012B'),
-				Tuple.Create('\u014C', '\u014D'),
-				Tuple.Create('\u016A', '\u016B'),
+				('\u0100', '\u0101'),
+				('\u0112', '\u0113'),
+				('\u012A', '\u012B'),
+				('\u014C', '\u014D'),
+				('\u016A', '\u016B'),
 			};
 
 			SmartQuoteRanges = new[]
 			{
-				Tuple.Create('\u2018', '\u2019'),
-				Tuple.Create('\u201C', '\u201D')
+				('\u2018', '\u2019'),
+				('\u201C', '\u201D')
 			};
 
 			RomajiRanges = new[]
@@ -184,10 +184,10 @@ namespace WanaKanaSharp
 
 			EnglishPunctuationRanges = new[]
 			{
-				Tuple.Create('\u0020', '\u002F'),
-				Tuple.Create('\u003A', '\u003F'),
-				Tuple.Create('\u005B', '\u0060'),
-				Tuple.Create('\u007B', '\u007E')
+				('\u0020', '\u002F'),
+				('\u003A', '\u003F'),
+				('\u005B', '\u0060'),
+				('\u007B', '\u007E')
 			};
 			EnglishPunctuationRanges = EnglishPunctuationRanges.Concat(SmartQuoteRanges).ToArray();
 		}
@@ -309,8 +309,8 @@ namespace WanaKanaSharp
 		static Boolean HasJapanese(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.Any((c) => IsJapanese(c, allowed));
 
 		static Boolean IsCharInRange(Char input, Char start, Char end) => (input >= start) && (input <= end);
-		static Boolean IsCharInRange(Char input, Tuple<Char, Char> range) => IsCharInRange(input, range.Item1, range.Item2);
-		static Boolean IsCharInRange(Char input, params Tuple<Char, Char>[] ranges) => ranges.Any((r) => IsCharInRange(input, r));
+		static Boolean IsCharInRange(Char input, (Char Start, Char End) range) => IsCharInRange(input, range.Start, range.End);
+		static Boolean IsCharInRange(Char input, params (Char Start, Char End)[] ranges) => ranges.Any((r) => IsCharInRange(input, r));
 
 		static Boolean IsMatch(Char input, Regex allowed) => (allowed != null) && (allowed.IsMatch(input.ToString()));
 	}

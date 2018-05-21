@@ -33,6 +33,11 @@
   <ItemGroup>
     <Compile Include="WanaKana.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="HepburnConverter.cs" />
+    <Compile Include="Utility\Trie.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Utility\" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>
