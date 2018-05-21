@@ -180,7 +180,7 @@ namespace WanaKanaSharp
 			{
 				ModernEnglish
 			};
-			RomajiRanges.Concat(HepburnMacronRanges);
+			RomajiRanges = RomajiRanges.Concat(HepburnMacronRanges).ToArray();
 
 			EnglishPunctuationRanges = new[]
 			{
@@ -189,33 +189,27 @@ namespace WanaKanaSharp
 				Tuple.Create('\u005B', '\u0060'),
 				Tuple.Create('\u007B', '\u007E')
 			};
-			EnglishPunctuationRanges.Concat(SmartQuoteRanges);
+			EnglishPunctuationRanges = EnglishPunctuationRanges.Concat(SmartQuoteRanges).ToArray();
 		}
 
 		public static Boolean IsRomaji(Char input, Regex allowed = null) => IsCharInRange(input, RomajiRanges) || IsMatch(input, allowed);
 		public static Boolean IsRomaji(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.All((c) => IsRomaji(c, allowed));
-		public static Boolean HasRomaji(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.Any((c) => IsRomaji(c, allowed));
 
 		public static Boolean IsHiragana(Char input) => (input == ProlongedSoundMark) || IsCharInRange(input, HiraganaStart, HiraganaEnd);
 		public static Boolean IsHiragana(String input) => !String.IsNullOrEmpty(input) && input.All(IsHiragana);
-		public static Boolean HasHiragana(String input) => !String.IsNullOrEmpty(input) && input.Any(IsHiragana);
 
 		public static Boolean IsKatakana(Char input) => IsCharInRange(input, KatakanaStart, KatakanaEnd);
 
 		public static Boolean IsKatakana(String input) => !String.IsNullOrEmpty(input) && input.All(IsKatakana);
-		public static Boolean HasKatakana(String input) => !String.IsNullOrEmpty(input) && input.Any(IsKatakana);
 
 		public static Boolean IsKana(Char input) => IsHiragana(input) || IsKatakana(input);
 		public static Boolean IsKana(String input) => !String.IsNullOrEmpty(input) && input.All(IsKana);
-		public static Boolean HasKana(String input) => !String.IsNullOrEmpty(input) && input.Any(IsKana);
 
 		public static Boolean IsKanji(Char input) => IsCharInRange(input, KanjiStart, KanjiEnd);
 		public static Boolean IsKanji(String input) => !String.IsNullOrEmpty(input) && input.All(IsKanji);
-		public static Boolean HasKanji(String input) => !String.IsNullOrEmpty(input) && input.Any(IsKanji);
 
 		public static Boolean IsJapanese(Char input, Regex allowed = null) => IsCharInRange(input, JapaneseRanges) || IsMatch(input, allowed);
 		public static Boolean IsJapanese(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.All((c) => IsJapanese(c, allowed));
-		public static Boolean HasJapanese(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.Any((c) => IsJapanese(c, allowed));
 
 		public static Boolean IsMixed(String input, Boolean passKanji = true) => (HasHiragana(input) || HasKatakana(input)) && HasRomaji(input) && (passKanji || !HasKanji(input));
 
@@ -306,6 +300,13 @@ namespace WanaKanaSharp
 
 			return TokenType.Unknown;
 		}
+
+		static Boolean HasRomaji(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.Any((c) => IsRomaji(c, allowed));
+		static Boolean HasHiragana(String input) => !String.IsNullOrEmpty(input) && input.Any(IsHiragana);
+		static Boolean HasKatakana(String input) => !String.IsNullOrEmpty(input) && input.Any(IsKatakana);
+		static Boolean HasKana(String input) => !String.IsNullOrEmpty(input) && input.Any(IsKana);
+		static Boolean HasKanji(String input) => !String.IsNullOrEmpty(input) && input.Any(IsKanji);
+		static Boolean HasJapanese(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.Any((c) => IsJapanese(c, allowed));
 
 		static Boolean IsCharInRange(Char input, Char start, Char end) => (input >= start) && (input <= end);
 		static Boolean IsCharInRange(Char input, Tuple<Char, Char> range) => IsCharInRange(input, range.Item1, range.Item2);
