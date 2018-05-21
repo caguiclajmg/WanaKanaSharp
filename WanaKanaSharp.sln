@@ -1,9 +1,9 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{B5E9A1B2-95D3-45BD-9CE2-121887BFFFEA}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanaKana", "Core\WanaKana.csproj", "{B5E9A1B2-95D3-45BD-9CE2-121887BFFFEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Test", "Test\Test.csproj", "{0FC545E0-13BF-4EE5-AC13-BBEDFCE0734C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WanaKana.Test.Unit", "Test\WanaKana.Test.Unit.csproj", "{0FC545E0-13BF-4EE5-AC13-BBEDFCE0734C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

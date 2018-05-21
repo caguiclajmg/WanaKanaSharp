@@ -4,11 +4,11 @@ using System.Runtime.CompilerServices;
 // Information about this assembly is defined by the following attributes. 
 // Change them to the values specific to your project.
 
-[assembly: AssemblyTitle("Core")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("WanaKana")]
+[assembly: AssemblyDescription("A Japanese transliteration library")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Haptic Bunny Studios")]
-[assembly: AssemblyProduct("")]
+[assembly: AssemblyProduct("WanaKanaSharp")]
 [assembly: AssemblyCopyright("Copyright © 2018 John Mark Gabriel Caguicla")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

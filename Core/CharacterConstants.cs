@@ -29,7 +29,7 @@ using System.Linq;
 
 namespace WanaKanaSharp
 {
-	public static class Constants
+	public static class CharacterConstants
 	{
 		public const Char LatinLowercaseStart = '\u0061';
 		public const Char LatinLowercaseEnd = '\u007A';
@@ -82,7 +82,7 @@ namespace WanaKanaSharp
 
 		public static (Char Start, Char End)[] EnglishPunctuationRanges;
 
-		static Constants()
+		static CharacterConstants()
 		{
 			ZenkakuNumbers = ('\uFF10', '\uFF19');
 			ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
