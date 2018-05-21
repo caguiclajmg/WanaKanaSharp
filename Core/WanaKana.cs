@@ -58,164 +58,30 @@ namespace WanaKanaSharp
 			ToKatakana
 		}
 
-		const Char LatinLowercaseStart = '\u0061';
-		const Char LatinLowercaseEnd = '\u007A';
-		const Char LatinUppercaseStart = '\u0041';
-		const Char LatinUppercaseEnd = '\u005A';
-		const Char ZenkakuLowercaseStart = '\uFF41';
-		const Char ZenkakuLowercaseEnd = '\uFF5A';
-		const Char ZenkakuUppercaseStart = '\uFF21';
-		const Char ZenkakuUppercaseEnd = '\uFF3A';
-		const Char HiraganaStart = '\u3041';
-		const Char HiraganaEnd = '\u3096';
-		const Char KatakanaStart = '\u30A1';
-		const Char KatakanaEnd = '\u30FC';
-		const Char KanjiStart = '\u4E00';
-		const Char KanjiEnd = '\u9FAF';
-		const Char ProlongedSoundMark = '\u30FC';
-		const Char KanaSlashDot = '\u30FB';
-
-		static (Char Start, Char End) ZenkakuNumbers;
-		static (Char Start, Char End) ZenkakuUppercase;
-		static (Char Start, Char End) ZenkakuLowercase;
-		static (Char Start, Char End) ZenkakuPunctuation1;
-		static (Char Start, Char End) ZenkakuPunctuation2;
-		static (Char Start, Char End) ZenkakuPunctuation3;
-		static (Char Start, Char End) ZenkakuPunctuation4;
-		static (Char Start, Char End) ZenkakuSymbolsCurrency;
-
-		static (Char Start, Char End) HiraganaCharacters;
-		static (Char Start, Char End) KatakanaCharacters;
-		static (Char Start, Char End) HankakuKatakana;
-		static (Char Start, Char End) KatakanaPunctuation;
-		static (Char Start, Char End) KanaPunctuation;
-		static (Char Start, Char End) CJKSymbolsPunctuation;
-		static (Char Start, Char End) CommonCJK;
-		static (Char Start, Char End) RareCJK;
-
-		static (Char Start, Char End)[] KanaRanges;
-
-		static (Char Start, Char End)[] JapanesePunctuationRanges;
-
-		static (Char Start, Char End)[] JapaneseRanges;
-
-		static (Char Start, Char End) ModernEnglish;
-
-		static (Char Start, Char End)[] HepburnMacronRanges;
-
-		static (Char Start, Char End)[] SmartQuoteRanges;
-
-		static (Char Start, Char End)[] RomajiRanges;
-
-		static (Char Start, Char End)[] EnglishPunctuationRanges;
-
-		static WanaKana()
-		{
-			ZenkakuNumbers = ('\uFF10', '\uFF19');
-			ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
-			ZenkakuLowercase = (ZenkakuLowercaseStart, ZenkakuLowercaseEnd);
-			ZenkakuPunctuation1 = ('\uFF01', '\uFF0F');
-			ZenkakuPunctuation2 = ('\uFF1A', '\uFF1F');
-			ZenkakuPunctuation3 = ('\uFF3B', '\uFF3F');
-			ZenkakuPunctuation4 = ('\uFF5B', '\uFF60');
-			ZenkakuSymbolsCurrency = ('\uFFE0', '\uFFEE');
-
-			HiraganaCharacters = ('\u3040', '\u309F');
-			KatakanaCharacters = ('\u30A0', '\u30FF');
-			HankakuKatakana = ('\uFF66', '\uFF9F');
-			KatakanaPunctuation = ('\u30FB', '\u30FC');
-			KanaPunctuation = ('\uFF61', '\uFF65');
-			CJKSymbolsPunctuation = ('\u3000', '\u303F');
-			CommonCJK = ('\u4E00', '\u9FFF');
-			RareCJK = ('\u3400', '\u4DBF');
-
-			KanaRanges = new[] {
-				HiraganaCharacters,
-				KatakanaCharacters,
-				KanaPunctuation,
-				HankakuKatakana
-			};
-
-			JapanesePunctuationRanges = new[]
-			{
-				CJKSymbolsPunctuation,
-				KanaPunctuation,
-				KatakanaPunctuation,
-				ZenkakuPunctuation1,
-				ZenkakuPunctuation2,
-				ZenkakuPunctuation3,
-				ZenkakuPunctuation4,
-				ZenkakuSymbolsCurrency
-			};
-
-			JapaneseRanges = new[]
-			{
-				ZenkakuUppercase,
-				ZenkakuLowercase,
-				ZenkakuNumbers,
-				CommonCJK,
-				RareCJK
-			};
-			JapaneseRanges = JapaneseRanges.Concat(KanaRanges).ToArray();
-			JapaneseRanges = JapaneseRanges.Concat(JapanesePunctuationRanges).ToArray();
-
-			ModernEnglish = ('\u0000', '\u007F');
-
-			HepburnMacronRanges = new[]
-			{
-				('\u0100', '\u0101'),
-				('\u0112', '\u0113'),
-				('\u012A', '\u012B'),
-				('\u014C', '\u014D'),
-				('\u016A', '\u016B'),
-			};
-
-			SmartQuoteRanges = new[]
-			{
-				('\u2018', '\u2019'),
-				('\u201C', '\u201D')
-			};
-
-			RomajiRanges = new[]
-			{
-				ModernEnglish
-			};
-			RomajiRanges = RomajiRanges.Concat(HepburnMacronRanges).ToArray();
-
-			EnglishPunctuationRanges = new[]
-			{
-				('\u0020', '\u002F'),
-				('\u003A', '\u003F'),
-				('\u005B', '\u0060'),
-				('\u007B', '\u007E')
-			};
-			EnglishPunctuationRanges = EnglishPunctuationRanges.Concat(SmartQuoteRanges).ToArray();
-		}
-
-		public static Boolean IsRomaji(Char input, Regex allowed = null) => IsCharInRange(input, RomajiRanges) || IsMatch(input, allowed);
+		public static Boolean IsRomaji(Char input, Regex allowed = null) => IsCharInRange(input, Constants.RomajiRanges) || IsMatch(input, allowed);
 		public static Boolean IsRomaji(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.All((c) => IsRomaji(c, allowed));
 
-		public static Boolean IsHiragana(Char input) => (input == ProlongedSoundMark) || IsCharInRange(input, HiraganaStart, HiraganaEnd);
+		public static Boolean IsHiragana(Char input) => (input == Constants.ProlongedSoundMark) || IsCharInRange(input, Constants.HiraganaStart, Constants.HiraganaEnd);
 		public static Boolean IsHiragana(String input) => !String.IsNullOrEmpty(input) && input.All(IsHiragana);
 
-		public static Boolean IsKatakana(Char input) => IsCharInRange(input, KatakanaStart, KatakanaEnd);
+		public static Boolean IsKatakana(Char input) => IsCharInRange(input, Constants.KatakanaStart, Constants.KatakanaEnd);
 
 		public static Boolean IsKatakana(String input) => !String.IsNullOrEmpty(input) && input.All(IsKatakana);
 
 		public static Boolean IsKana(Char input) => IsHiragana(input) || IsKatakana(input);
 		public static Boolean IsKana(String input) => !String.IsNullOrEmpty(input) && input.All(IsKana);
 
-		public static Boolean IsKanji(Char input) => IsCharInRange(input, KanjiStart, KanjiEnd);
+		public static Boolean IsKanji(Char input) => IsCharInRange(input, Constants.KanjiStart, Constants.KanjiEnd);
 		public static Boolean IsKanji(String input) => !String.IsNullOrEmpty(input) && input.All(IsKanji);
 
-		public static Boolean IsJapanese(Char input, Regex allowed = null) => IsCharInRange(input, JapaneseRanges) || IsMatch(input, allowed);
+		public static Boolean IsJapanese(Char input, Regex allowed = null) => IsCharInRange(input, Constants.JapaneseRanges) || IsMatch(input, allowed);
 		public static Boolean IsJapanese(String input, Regex allowed = null) => !String.IsNullOrEmpty(input) && input.All((c) => IsJapanese(c, allowed));
 
 		public static Boolean IsMixed(String input, Boolean passKanji = true) => (HasHiragana(input) || HasKatakana(input)) && HasRomaji(input) && (passKanji || !HasKanji(input));
 
-		public static Boolean IsEnglishPunctuation(Char input) => IsCharInRange(input, EnglishPunctuationRanges);
+		public static Boolean IsEnglishPunctuation(Char input) => IsCharInRange(input, Constants.EnglishPunctuationRanges);
 
-		public static Boolean IsJapanesePunctuation(Char input) => IsCharInRange(input, JapanesePunctuationRanges);
+		public static Boolean IsJapanesePunctuation(Char input) => IsCharInRange(input, Constants.JapanesePunctuationRanges);
 
 		public static String ToRomaji(String input, Boolean upcaseKatakana = false, Object customRomajiMapping = null)
 		{
@@ -256,7 +122,6 @@ namespace WanaKanaSharp
 				} while (GetTokenType(input[position]) == type);
 
 				tokens.Add(input.Substring(start, position - start));
-				Console.WriteLine(input.Substring(start, position - start));
 			} while (position < input.Length);
 
 			return tokens.ToArray();
