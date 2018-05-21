@@ -33,7 +33,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="WanaKana.cs" />
+    <Compile Include="WanaKanaTest.cs" />
+    <Compile Include="HepburnConverterTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -41,7 +42,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Core\Core.csproj">
       <Project>{B5E9A1B2-95D3-45BD-9CE2-121887BFFFEA}</Project>
-      <Name>Core</Name>
+      <Name>WanaKana</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

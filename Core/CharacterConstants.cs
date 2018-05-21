@@ -29,7 +29,7 @@ using System.Linq;
 
 namespace WanaKanaSharp
 {
-	public class Constants
+	public static class Constants
 	{
 		public const Char LatinLowercaseStart = '\u0061';
 		public const Char LatinLowercaseEnd = '\u007A';
