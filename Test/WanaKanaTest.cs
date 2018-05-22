@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
 
 using NUnit.Framework;
 
-namespace WanaKanaSharp
+namespace WanaKanaSharp.Test
 {
 	[TestFixture()]
 	public class WanaKanaTest

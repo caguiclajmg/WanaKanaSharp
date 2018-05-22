@@ -40,7 +40,7 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Core\Core.csproj">
+    <ProjectReference Include="..\Core\WanaKana.csproj">
       <Project>{B5E9A1B2-95D3-45BD-9CE2-121887BFFFEA}</Project>
       <Name>WanaKana</Name>
     </ProjectReference>
