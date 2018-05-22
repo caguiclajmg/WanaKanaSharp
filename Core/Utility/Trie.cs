@@ -102,21 +102,32 @@ namespace WanaKanaSharp.Utility
 				return new Enumerator(Children.GetEnumerator());
 			}
 
+			public Node Insert(Node child)
+			{
+				child.Parent = this;
+				Children.Add(child.Key, child);
+				return child;
+			}
+
 			public void Insert(params Node[] children)
 			{
 				foreach (var child in children)
 				{
-					child.Parent = this;
-					Children.Add(child.Key, child);
+					Insert(child);
 				}
+			}
+
+			public Node Insert((TKey Key, TValue Value) child)
+			{
+				var node = new Node(child.Key, child.Value);
+				return Insert(node);
 			}
 
 			public void Insert(params (TKey Key, TValue Value)[] children)
 			{
 				foreach (var child in children)
 				{
-					var node = new Node(child.Key, child.Value);
-					Insert(node);
+					Insert(child);
 				}
 			}
 
