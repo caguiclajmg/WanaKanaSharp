@@ -45,25 +45,27 @@ namespace WanaKanaSharp
 			var katakanaTree = BuildKatakanaTree();
 			var kanaTree = Trie<Char, String>.Merge(hiraganaTree, katakanaTree);
 
-			HepburnTree.Root.Insert(('。', "."),
-									('、', ","),
-									('：', ":"),
-									('・', "/"),
-									('！', "!"),
-									('？', "?"),
-									('〜', "~"),
-									('ー', "-"),
-									('「', "‘"),
-									('」', "’"),
-									('『', "“"),
-									('』', "”"),
-									('［', "["),
-									('］', "]"),
-									('（', "("),
-									('）', ")"),
-									('｛', "{"),
-									('｝', "}"),
-									('　', " "));
+			var root = HepburnTree.Root;
+
+			root.Insert(('。', "."),
+						('、', ","),
+						('：', ":"),
+						('・', "/"),
+						('！', "!"),
+						('？', "?"),
+						('〜', "~"),
+						('ー', "-"),
+						('「', "‘"),
+						('」', "’"),
+						('『', "“"),
+						('』', "”"),
+						('［', "["),
+						('］', "]"),
+						('（', "("),
+						('）', ")"),
+						('｛', "{"),
+						('｝', "}"),
+						('　', " "));
 
 			HepburnTree.Merge(kanaTree);
 		}
@@ -81,7 +83,7 @@ namespace WanaKanaSharp
 			do
 			{
 				var pair = Convert(characters, position);
-				var uppercase = upcaseKatakana && IsKatakana(input.Substring(position, pair.Position - position));
+				var uppercase = upcaseKatakana && WanaKana.IsKatakana(input.Substring(position, pair.Position - position));
 				builder.Append(uppercase ? pair.Token.ToUpper() : pair.Token);
 				position = pair.Position;
 			} while (position < input.Length);
@@ -325,38 +327,12 @@ namespace WanaKanaSharp
 			return trie;
 		}
 
-		static void BuildKatakanaMap()
-		{
-			foreach (var a in new[]
-			{
-				('ア', 'あ'), ('イ', 'い'), ('ウ', 'う'), ('エ', 'え'), ('オ', 'お'),
-				('カ', 'か'), ('キ', 'き'), ('ク', 'く'), ('ケ', 'け'), ('コ', 'こ'),
-				('サ', 'さ'), ('シ', 'し'), ('ス', 'す'), ('セ', 'せ'), ('ソ', 'そ'),
-				('タ', 'た'), ('チ', 'ち'), ('ツ', 'つ'), ('テ', 'て'), ('ト', 'と'),
-				('ナ', 'な'), ('ニ', 'に'), ('ヌ', 'ぬ'), ('ネ', 'ね'), ('ノ', 'の'),
-				('ハ', 'は'), ('ヒ', 'ひ'), ('フ', 'ふ'), ('ヘ', 'へ'), ('ホ', 'ほ'),
-				('マ', 'ま'), ('ミ', 'み'), ('ム', 'む'), ('メ', 'め'), ('モ', 'も'),
-				('ヤ', 'や'), ('ユ', 'ゆ'), ('ヨ', 'よ'),
-				('ラ', 'ら'), ('リ', 'り'), ('ル', 'る'), ('レ', 'れ'), ('ロ', 'ろ'),
-				('ワ', 'わ'), ('ヲ', 'を'),
-				('ン', 'ん'),
-				('ガ', 'が'), ('ギ', 'ぎ'), ('グ', 'ぐ'), ('ゲ', 'げ'), ('ゴ', 'ご'),
-				('ザ', 'ざ'), ('ジ', 'じ'), ('ズ', 'ず'), ('ゼ', 'ぜ'), ('ゾ', 'ぞ'),
-				('ダ', 'だ'), ('ヂ', 'ぢ'), ('ヅ', 'づ'), ('デ', 'で'), ('ド', 'ど'),
-				('バ', 'ば'), ('ビ', 'び'), ('ブ', 'ぶ'), ('ベ', 'べ'), ('ボ', 'ぼ'),
-				('パ', 'ぱ'), ('ピ', 'ぴ'), ('プ', 'ぷ'), ('ペ', 'ぺ'), ('ポ', 'ぽ'),
-				('ァ', 'ぁ'), ('ィ', 'ぃ'), ('ゥ', 'ぅ'), ('ェ', 'ぇ'), ('ォ', 'ぉ'),
-				('ャ', 'ゃ'), ('ュ', 'ゅ'), ('ョ', 'ょ')
-			})
-			{
-				KatakanaMap.Add(a.Item1, a.Item2);
-			}
-		}
-
 		static (String Token, Int32 Position) Convert(Char[] input, Int32 position)
 		{
 			var current = HepburnTree.Root;
 			var next = current.GetChild(input[position]);
+
+			if (next == null) return (Token: input[position].ToString(), Position: position + 1);
 
 			while (next != null)
 			{
@@ -368,29 +344,7 @@ namespace WanaKanaSharp
 				next = current.GetChild(input[position]);
 			}
 
-			if (current == HepburnTree.Root)
-			{
-				return (Token: input[position].ToString(), Position: position + 1);
-			}
-			else
-			{
-				return (Token: current.Value, Position: position);
-			}
-		}
-
-		static Boolean IsKatakana(Char input)
-		{
-			return (input >= CharacterConstants.KatakanaStart) && (input <= CharacterConstants.KatakanaEnd);
-		}
-
-		static Boolean IsKatakana(String input)
-		{
-			return !String.IsNullOrEmpty(input) && input.All(IsKatakana);
-		}
-
-		static Boolean IsProlongedSoundMark(Char input)
-		{
-			return input == CharacterConstants.ProlongedSoundMark;
+			return (Token: current.Value, Position: position);
 		}
 	}
 }
