@@ -181,6 +181,14 @@ namespace WanaKanaSharp.Utility
 
 		public Node Root { get; } = new Node(default(TKey), default(TValue));
 
+		public void Merge(Trie<TKey, TValue> trie)
+		{
+			trie.Root.TraverseChildren((node) =>
+			{
+				Root.Insert(node.Duplicate(true));
+			});
+		}
+
 		public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b)
 		{
 			var trie = new Trie<TKey, TValue>();
