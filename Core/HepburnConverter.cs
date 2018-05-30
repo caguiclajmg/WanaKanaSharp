@@ -27,7 +27,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Text;
 
 using WanaKanaSharp.Utility;
@@ -42,13 +41,38 @@ namespace WanaKanaSharp
 
 		static HepburnConverter()
 		{
-			BuildHepburnMap();
-			BuildKatakanaMap();
+			var hiraganaTree = BuildHiraganaTree();
+			var katakanaTree = BuildKatakanaTree();
+			var kanaTree = Trie<Char, String>.Merge(hiraganaTree, katakanaTree);
+
+			HepburnTree.Root.Insert(('。', "."),
+									('、', ","),
+									('：', ":"),
+									('・', "/"),
+									('！', "!"),
+									('？', "?"),
+									('〜', "~"),
+									('ー', "-"),
+									('「', "‘"),
+									('」', "’"),
+									('『', "“"),
+									('』', "”"),
+									('［', "["),
+									('］', "]"),
+									('（', "("),
+									('）', ")"),
+									('｛', "{"),
+									('｝', "}"),
+									('　', " "));
+
+			HepburnTree.Merge(kanaTree);
 		}
 
 		public static String Convert(String input, Boolean upcaseKatakana, Trie<Char, String> customRomajiMapping)
 		{
 			if (String.IsNullOrEmpty(input)) return "";
+
+			var characters = input.ToCharArray();
 
 			var root = HepburnTree.Root;
 			var builder = new StringBuilder();
@@ -56,7 +80,7 @@ namespace WanaKanaSharp
 			Int32 position = 0;
 			do
 			{
-				var pair = Convert(root, input, position);
+				var pair = Convert(characters, position);
 				var uppercase = upcaseKatakana && IsKatakana(input.Substring(position, pair.Position - position));
 				builder.Append(uppercase ? pair.Token.ToUpper() : pair.Token);
 				position = pair.Position;
@@ -65,9 +89,10 @@ namespace WanaKanaSharp
 			return builder.ToString();
 		}
 
-		static void BuildHepburnMap()
+		static Trie<Char, String> BuildHiraganaTree()
 		{
-			var root = HepburnTree.Root;
+			var trie = new Trie<Char, String>();
+			var root = trie.Root;
 
 			root.Insert(('あ', "a"), ('い', "i"), ('う', "u"), ('え', "e"), ('お', "o"),
 						('か', "ka"), ('き', "ki"), ('く', "ku"), ('け', "ke"), ('こ', "ko"),
@@ -88,76 +113,192 @@ namespace WanaKanaSharp
 						('ぁ', "a"), ('ぃ', "i"), ('ぅ', "u"), ('ぇ', "e"), ('ぉ', "o"),
 						('ゃ', "ya"), ('ゅ', "yu"), ('ょ', "yo"));
 
-			root.Insert(('。', "."),
-						('、', ","),
-						('：', ":"),
-						('・', "/"),
-						('！', "!"),
-						('？', "?"),
-						('〜', "~"),
-						('ー', "-"),
-						('「', "‘"),
-						('」', "’"),
-						('『', "“"),
-						('』', "”"),
-						('［', "["),
-						('］', "]"),
-						('（', "("),
-						('）', ")"),
-						('｛', "{"),
-						('｝', "}"),
-						('　', " "));
-
-			foreach (var key in new[] { 'き', 'に', 'ひ', 'み', 'り', 'ぎ', 'び', 'ぴ' })
 			{
-				var node = root[key];
-				var prefix = node.Value[0];
+				var whitelist = new[] { 'き', 'に', 'ひ', 'み', 'り', 'ぎ', 'び', 'ぴ' };
 
-				root[key].Insert(('ゃ', prefix + "ya"), ('ゅ', prefix + "yu"), ('ょ', prefix + "yo"));
+				foreach (var key in whitelist)
+				{
+					var node = root[key];
+					var prefix = node.Value[0];
+
+					root[key].Insert(('ゃ', prefix + "ya"), ('ゅ', prefix + "yu"), ('ょ', prefix + "yo"));
+				}
 			}
 
-			foreach (var key in new[] { 'し', 'ち' })
 			{
-				var node = root[key];
-				var prefix = node.Value[0];
+				var whitelist = new[] { 'し', 'ち' };
 
-				node.Insert(('ゃ', prefix + "ha"), ('ゅ', prefix + "hu"), ('ょ', prefix + "ho"));
+				foreach (var key in whitelist)
+				{
+					var node = root[key];
+					var prefix = node.Value[0];
+
+					node.Insert(('ゃ', prefix + "ha"), ('ゅ', prefix + "hu"), ('ょ', prefix + "ho"));
+				}
 			}
 
-			foreach (var key in new[] { 'じ', 'ぢ' })
 			{
-				var node = root[key];
-				var prefix = node.Value[0];
+				var whitelist = new[] { 'じ', 'ぢ' };
 
-				node.Insert(('ゃ', prefix + "a"), ('ゅ', prefix + "u"), ('ょ', prefix + "o"));
+				foreach (var key in whitelist)
+				{
+					var node = root[key];
+					var prefix = node.Value[0];
+
+					node.Insert(('ゃ', prefix + "a"), ('ゅ', prefix + "u"), ('ょ', prefix + "o"));
+				}
 			}
 
-			BuildSokuonTree();
+			{
+				var node = root['ん'];
+				var prefix = node.Value[0];
+
+				node.Insert(('や', prefix + "'ya"), ('ゆ', prefix + "'yu"), ('よ', prefix + "'yo"));
+			}
+
+			{
+				var node = root['ん'];
+				var prefix = node.Value[0];
+
+				node.Insert(('あ', prefix + "'a"), ('い', prefix + "'i"), ('う', prefix + "'u"), ('え', prefix + "'e"), ('お', prefix + "'o"));
+			}
+
+			{
+				var sokuon = root.Insert(('っ', ""));
+				var exceptions = new[]
+				{
+					'あ', 'い', 'う', 'え', 'お',
+					'や', 'ゆ', 'よ',
+					'ん',
+					'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+					'ゃ', 'ゅ', 'ょ',
+					'っ'
+				};
+
+				foreach (var child in root.Where((node) => !exceptions.Contains(node.Key)))
+				{
+					sokuon.Insert(child.Duplicate(true));
+				}
+			}
+
+			{
+				var sokuon = root['っ'];
+
+				sokuon.TraverseChildren((node) =>
+				{
+					var value = node.Value;
+
+					if (node.Value.StartsWith("ch", StringComparison.Ordinal))
+					{
+						node.Value = 't' + value;
+					}
+					else
+					{
+						node.Value = value[0] + value;
+					}
+				}, -1);
+			}
+
+			return trie;
 		}
 
-		static void BuildSokuonTree()
+		static Trie<Char, String> BuildKatakanaTree()
 		{
-			var root = HepburnTree.Root;
-			var sokuon = root.Insert(('っ', ""));
+			var trie = new Trie<Char, String>();
+			var root = trie.Root;
 
-			var exceptions = new[]
+			root.Insert(('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
+						('カ', "ka"), ('キ', "ki"), ('ク', "ku"), ('ケ', "ke"), ('コ', "ko"),
+						('サ', "sa"), ('シ', "shi"), ('ス', "su"), ('セ', "se"), ('ソ', "so"),
+						('タ', "ta"), ('チ', "chi"), ('ツ', "tsu"), ('テ', "te"), ('ト', "to"),
+						('ナ', "na"), ('ニ', "ni"), ('ヌ', "nu"), ('ネ', "ne"), ('ノ', "no"),
+						('ハ', "ha"), ('ヒ', "hi"), ('フ', "hu"), ('ヘ', "he"), ('ホ', "ho"),
+						('マ', "ma"), ('ミ', "mi"), ('ム', "mu"), ('メ', "me"), ('モ', "mo"),
+						('ヤ', "ya"), ('ユ', "yu"), ('ヨ', "yo"),
+						('ラ', "ra"), ('リ', "ri"), ('ル', "ru"), ('レ', "re"), ('ロ', "ro"),
+						('ワ', "wa"), ('ヲ', "wo"),
+						('ン', "n"),
+						('ガ', "ga"), ('ギ', "gi"), ('グ', "gu"), ('ゲ', "ge"), ('ゴ', "go"),
+						('ザ', "za"), ('ジ', "ji"), ('ズ', "zu"), ('ゼ', "ze"), ('ゾ', "zo"),
+						('ダ', "da"), ('ヂ', "ji"), ('ヅ', "zu"), ('デ', "de"), ('ド', "do"),
+						('バ', "ba"), ('ビ', "bi"), ('ブ', "bu"), ('ベ', "be"), ('ボ', "bo"),
+						('パ', "pa"), ('ピ', "pi"), ('プ', "pu"), ('ペ', "pe"), ('ポ', "po"),
+						('ァ', "a"), ('ィ', "i"), ('ゥ', "u"), ('ェ', "e"), ('ォ', "o"),
+						('ャ', "ya"), ('ュ', "yu"), ('ョ', "yo"));
+
 			{
-				'あ', 'う', 'え', 'お',
-				'や', 'ゆ', 'よ',
-				'ん',
-				'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
-				'ゃ', 'ゅ', 'ょ'
-			};
-			foreach (var child in root.Where((node) => !exceptions.Contains(node.Key)))
+				var whitelist = new[] { 'キ', 'ニ', 'ヒ', 'ミ', 'リ', 'ギ', 'ビ', 'ピ' };
+
+				foreach (var key in whitelist)
+				{
+					var node = root[key];
+					var prefix = node.Value[0];
+
+					root[key].Insert(('ャ', prefix + "ya"), ('ュ', prefix + "yu"), ('ョ', prefix + "yo"));
+				}
+			}
+
 			{
-				sokuon.Insert(child.Duplicate(true));
+				var whitelist = new[] { 'シ', 'チ' };
+
+				foreach (var key in whitelist)
+				{
+					var node = root[key];
+					var prefix = node.Value[0];
+
+					node.Insert(('ャ', prefix + "ha"), ('ュ', prefix + "hu"), ('ョ', prefix + "ho"));
+				}
+			}
+
+			{
+				var whitelist = new[] { 'ジ', 'ヂ' };
+
+				foreach (var key in whitelist)
+				{
+					var node = root[key];
+					var prefix = node.Value[0];
+
+					node.Insert(('ャ', prefix + "a"), ('ュ', prefix + "u"), ('ョ', prefix + "o"));
+				}
+			}
+
+			{
+				var node = root['ン'];
+				var prefix = node.Value[0];
+
+				node.Insert(('ヤ', prefix + "'ya"), ('ユ', prefix + "'yu"), ('ヨ', prefix + "'yo"));
+			}
+
+			{
+				var node = root['ン'];
+				var prefix = node.Value[0];
+
+				node.Insert(('ア', prefix + "'a"), ('イ', prefix + "'i"), ('ウ', prefix + "'u"), ('エ', prefix + "'e"), ('オ', prefix + "'o"));
+			}
+
+			var sokuon = root.Insert(('ッ', ""));
+
+			{
+				var exceptions = new[]
+				{
+					'ア', 'イ', 'ウ', 'エ', 'オ',
+					'ヤ', 'ユ', 'ヨ',
+					'ン',
+					'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
+					'ャ', 'ュ', 'ョ',
+					'ッ'
+				};
+
+				foreach (var child in root.Where((node) => !exceptions.Contains(node.Key)))
+				{
+					sokuon.Insert(child.Duplicate(true));
+				}
 			}
 
 			sokuon.TraverseChildren((node) =>
 			{
-				if (String.IsNullOrEmpty(node.Value)) return;
-
 				var value = node.Value;
+
 				if (node.Value.StartsWith("ch", StringComparison.Ordinal))
 				{
 					node.Value = 't' + value;
@@ -167,11 +308,21 @@ namespace WanaKanaSharp
 					node.Value = value[0] + value;
 				}
 			}, -1);
-		}
 
-		static void BuildChoonpu()
-		{
+			{
+				var blacklist = new[] { 'ン', 'ッ' };
 
+				root.TraverseChildren((node) =>
+				{
+					if (blacklist.Contains(node.Key)) return;
+
+					var value = node.Value;
+
+					node.Insert((Key: 'ー', Value: value + value[value.Length - 1]));
+				});
+			}
+
+			return trie;
 		}
 
 		static void BuildKatakanaMap()
@@ -202,27 +353,10 @@ namespace WanaKanaSharp
 			}
 		}
 
-		static (String Token, Int32 Position) Convert(Trie<Char, String>.Node node, String input, Int32 position)
+		static (String Token, Int32 Position) Convert(Char[] input, Int32 position)
 		{
-			var c = input[position];
-			if (IsKatakana(c))
-			{
-				if (c == CharacterConstants.ProlongedSoundMark)
-				{
-
-				}
-				else
-				{
-					c = KatakanaMap[c];
-				}
-			}
-			if (!node.ContainsKey(c))
-			{
-				return (Token: c.ToString(), Position: position + 1);
-			}
-
-			var current = node;
-			var next = current.GetChild(c);
+			var current = HepburnTree.Root;
+			var next = current.GetChild(input[position]);
 
 			while (next != null)
 			{
@@ -234,7 +368,14 @@ namespace WanaKanaSharp
 				next = current.GetChild(input[position]);
 			}
 
-			return (Token: current.Value, Position: position);
+			if (current == HepburnTree.Root)
+			{
+				return (Token: input[position].ToString(), Position: position + 1);
+			}
+			else
+			{
+				return (Token: current.Value, Position: position);
+			}
 		}
 
 		static Boolean IsKatakana(Char input)
@@ -245,6 +386,11 @@ namespace WanaKanaSharp
 		static Boolean IsKatakana(String input)
 		{
 			return !String.IsNullOrEmpty(input) && input.All(IsKatakana);
+		}
+
+		static Boolean IsProlongedSoundMark(Char input)
+		{
+			return input == CharacterConstants.ProlongedSoundMark;
 		}
 	}
 }
