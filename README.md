@@ -1,7 +1,27 @@
 <div align="center">
-    <a href="https://travis-ci.org/caguiclajmg/WanaKanaSharp">
-        <img src="https://img.shields.io/travis/caguiclajmg/WanaKanaSharp.svg" />
-    </a>
+    <table>
+        <tr>
+            <th>Travis CI</th>
+            <th>AppVeyor</th>
+        </tr>
+        <tr>
+            <td>
+                <a href="https://travis-ci.org/caguiclajmg/WanaKanaSharp">
+                    <img src="https://img.shields.io/travis/caguiclajmg/WanaKanaSharp.svg" />
+                </a>
+            </td>
+            <td>
+                <a href="https://ci.appveyor.com/project/caguiclajmg/wanakanasharp">
+                    <div align="center">
+                        <img src="https://img.shields.io/appveyor/ci/caguiclajmg/WanaKanaSharp.svg" />
+                    </div>
+                    <div align="center">
+                        <img src="https://img.shields.io/appveyor/tests/caguiclajmg/WanaKanaSharp.svg" />
+                    </div>
+                </a>
+            </td>
+        </tr>
+    </table>
 </div>
 
 <div align="center">
