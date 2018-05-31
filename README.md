@@ -24,4 +24,8 @@ NuGet packages for WanaKanaSharp are unavailable at the moment.
     WanaKana.IsKatakana("テレビ"); // true
     WanaKana.IsKana("これはキュートです") // true
     WanaKana.IsKanji("日本語") // true
+
+    WanaKana.ToRomaji("ひらがな"); // hiragana
+    WanaKana.ToRomaji("カタカナ"); // katakana
+    WanaKana.ToRomaji("今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATI
 ```
