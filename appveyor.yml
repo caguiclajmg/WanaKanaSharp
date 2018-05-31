@@ -1,0 +1,7 @@
+version: 1.0.{build}
+image: Visual Studio 2017
+install:
+- cmd: nuget restore
+build:
+  project: WanaKanaSharp.sln
+  verbosity: normal
