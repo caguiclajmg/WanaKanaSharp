@@ -65,7 +65,6 @@ namespace WanaKanaSharp.Test
 		[TestCase("おんよみ", ExpectedResult = "on'yomi")]
 		[TestCase("んよ んあ んゆ", ExpectedResult = "n'yo n'a n'yu")]
 		[TestCase("シンヨ", ExpectedResult = "shin'yo")]
-		[TestCase("今日 は パーティ", true, ExpectedResult = "今日 ha PAATI")]
 		public String Convert(String input, Boolean upcaseKatakana = false, Trie<Char, String> customRomajiMapping = null) => HepburnConverter.Convert(input, upcaseKatakana, customRomajiMapping);
 	}
 }

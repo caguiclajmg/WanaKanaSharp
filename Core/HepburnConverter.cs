@@ -74,15 +74,14 @@ namespace WanaKanaSharp
 		{
 			if (String.IsNullOrEmpty(input)) return "";
 
-			var characters = input.ToCharArray();
+			var romajiTree = (customRomajiMapping == null) ? HepburnTree : Trie<Char, String>.Merge(HepburnTree, customRomajiMapping);
 
-			var root = HepburnTree.Root;
 			var builder = new StringBuilder();
 
 			Int32 position = 0;
 			do
 			{
-				var pair = Convert(characters, position);
+				var pair = Convert(romajiTree, input, position);
 				var uppercase = upcaseKatakana && WanaKana.IsKatakana(input.Substring(position, pair.Position - position));
 				builder.Append(uppercase ? pair.Token.ToUpper() : pair.Token);
 				position = pair.Position;
@@ -322,9 +321,9 @@ namespace WanaKanaSharp
 			return trie;
 		}
 
-		static (String Token, Int32 Position) Convert(Char[] input, Int32 position)
+		static (String Token, Int32 Position) Convert(Trie<Char, String> romajiTree, String input, Int32 position)
 		{
-			var current = HepburnTree.Root;
+			var current = romajiTree.Root;
 			var next = current.GetChild(input[position]);
 
 			if (next == null) return (Token: input[position].ToString(), Position: position + 1);
