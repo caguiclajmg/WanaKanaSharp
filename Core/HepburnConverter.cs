@@ -74,7 +74,7 @@ namespace WanaKanaSharp
 		{
 			if (String.IsNullOrEmpty(input)) return "";
 
-			var romajiTree = (customRomajiMapping == null) ? HepburnTree : Trie<Char, String>.Merge(HepburnTree, customRomajiMapping);
+			var romajiTree = (customRomajiMapping == null) ? HepburnTree : customRomajiMapping;
 
 			var builder = new StringBuilder();
 
