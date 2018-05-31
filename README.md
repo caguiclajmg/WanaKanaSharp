@@ -27,5 +27,5 @@ NuGet packages for WanaKanaSharp are unavailable at the moment.
 
     WanaKana.ToRomaji("ひらがな"); // hiragana
     WanaKana.ToRomaji("カタカナ"); // katakana
-    WanaKana.ToRomaji("今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATI
+    WanaKana.ToRomaji("今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
 ```
