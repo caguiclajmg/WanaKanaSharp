@@ -46,11 +46,25 @@ namespace WanaKanaSharp
 			JapanesePunctuation
 		}
 
+		/// <summary>
+		/// Specifies the Romanization rules to use during conversion
+		/// </summary>
 		public enum RomanizationMethod
 		{
+			/// <summary>
+			/// Hepburn Romanization
+			/// </summary>
 			Hepburn,
-			Nihon,
-			Kunrei
+
+			/// <summary>
+			/// Kunrei-shiki Romanization
+			/// </summary>
+			Kunrei,
+
+			/// <summary>
+			/// Nihon-shiki Romanization
+			/// </summary>
+			Nihon
 		}
 
 		public enum IMEMode
@@ -60,61 +74,125 @@ namespace WanaKanaSharp
 			ToKatakana
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a Romaji character or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is a Romaji character, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
+		/// <param name="allowed">Additional allowed characters.</param>
 		public static Boolean IsRomaji(Char input, Regex allowed = null)
 		{
 			return IsCharInRange(input, CharacterConstants.RomajiRanges) || IsMatch(input, allowed);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input consists exclusively of Romaji characters.
+		/// </summary>
+		/// <returns><c>true</c>, if the string consists exclusively of Romaji characters, <c>false</c> otherwise.</returns>
+		/// <param name="input">The string to test.</param>
+		/// <param name="allowed">Additional allowed characters.</param>
 		public static Boolean IsRomaji(String input, Regex allowed = null)
 		{
 			return !String.IsNullOrEmpty(input) && input.All((c) => IsRomaji(c, allowed));
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a Hiragana character or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is a Hiragana character, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
 		public static Boolean IsHiragana(Char input)
 		{
 			return (input == CharacterConstants.ProlongedSoundMark) || IsCharInRange(input, CharacterConstants.HiraganaStart, CharacterConstants.HiraganaEnd);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input consists exclusively of Hiragana characters.
+		/// </summary>
+		/// <returns><c>true</c>, if the string consists exclusively of Hiragana characters, <c>false</c> otherwise.</returns>
+		/// <param name="input">Input.</param>
 		public static Boolean IsHiragana(String input)
 		{
 			return !String.IsNullOrEmpty(input) && input.All(IsHiragana);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a Katakana character or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is a Katakana character, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
 		public static Boolean IsKatakana(Char input)
 		{
 			return IsCharInRange(input, CharacterConstants.KatakanaStart, CharacterConstants.KatakanaEnd);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input consists exclusively of Katakana characters.
+		/// </summary>
+		/// <returns><c>true</c>, if the string consists exclusively of Katakana characters, <c>false</c> otherwise.</returns>
+		/// <param name="input">Input.</param>
 		public static Boolean IsKatakana(String input)
 		{
 			return !String.IsNullOrEmpty(input) && input.All(IsKatakana);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a Kana character or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is a Kana character, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
 		public static Boolean IsKana(Char input)
 		{
 			return IsHiragana(input) || IsKatakana(input);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input consists exclusively of Kana characters.
+		/// </summary>
+		/// <returns><c>true</c>, if the string consists exclusively of Kana characters, <c>false</c> otherwise.</returns>
+		/// <param name="input">Input.</param>
 		public static Boolean IsKana(String input)
 		{
 			return !String.IsNullOrEmpty(input) && input.All(IsKana);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a Kanji character or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is a Kanji character, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
 		public static Boolean IsKanji(Char input)
 		{
 			return IsCharInRange(input, CharacterConstants.KanjiStart, CharacterConstants.KanjiEnd);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input consists exclusively of Kanji characters.
+		/// </summary>
+		/// <returns><c>true</c>, if the string consists exclusively of Kanji characters, <c>false</c> otherwise.</returns>
+		/// <param name="input">Input.</param>
 		public static Boolean IsKanji(String input)
 		{
 			return !String.IsNullOrEmpty(input) && input.All(IsKanji);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a Japanese character or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is a Japanese character, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
+		/// <param name="allowed">Additional allowed characters.</param>
 		public static Boolean IsJapanese(Char input, Regex allowed = null)
 		{
 			return IsCharInRange(input, CharacterConstants.JapaneseRanges) || IsMatch(input, allowed);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input consists exclusively of Japanese characters.
+		/// </summary>
+		/// <returns><c>true</c>, if the string consists exclusively of Japanese characters, <c>false</c> otherwise.</returns>
+		/// <param name="input">The string to test.</param>
+		/// <param name="allowed">Additional allowed characters.</param>
 		public static Boolean IsJapanese(String input, Regex allowed = null)
 		{
 			return !String.IsNullOrEmpty(input) && input.All((c) => IsJapanese(c, allowed));
@@ -125,19 +203,50 @@ namespace WanaKanaSharp
 			return (HasHiragana(input) || HasKatakana(input)) && HasRomaji(input) && (passKanji || !HasKanji(input));
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a English punctuation or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is an English punctuation, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
 		public static Boolean IsEnglishPunctuation(Char input)
 		{
 			return IsCharInRange(input, CharacterConstants.EnglishPunctuationRanges);
 		}
 
+		/// <summary>
+		/// Indicates whether the supplied input is a Japanese punctuation or not.
+		/// </summary>
+		/// <returns><c>true</c>, if the input is an Japanese punctuation, <c>false</c> otherwise.</returns>
+		/// <param name="input">The character to test.</param>
 		public static Boolean IsJapanesePunctuation(Char input)
 		{
 			return IsCharInRange(input, CharacterConstants.JapanesePunctuationRanges);
 		}
 
-		public static String ToRomaji(String input, Boolean upcaseKatakana = false, Trie<Char, String> customRomajiMapping = null)
+		/// <summary>
+		/// Converts
+		/// </summary>
+		/// <returns>The Romaji equivalent of the input string.</returns>
+		/// <param name="input">The string to convert.</param>
+		/// <param name="upcaseKatakana">If set to <c>true</c>, Katakana characters are converted into uppercase Romaji characters.</param>
+		/// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
+		/// <param name="romanizationMethod">Romanization method to use.</param>
+		public static String ToRomaji(String input, Boolean upcaseKatakana = false, Trie<Char, String> customRomajiMapping = null, RomanizationMethod romanizationMethod = RomanizationMethod.Hepburn)
 		{
-			throw new NotImplementedException("WanaKana.ToRomaji(String, Boolean, Object) not yet implemented!");
+			switch (romanizationMethod)
+			{
+				case RomanizationMethod.Hepburn:
+					return HepburnConverter.Convert(input, upcaseKatakana, customRomajiMapping);
+
+				case RomanizationMethod.Kunrei:
+					throw new NotImplementedException("Kunrei-shiki not yet implemented!");
+
+				case RomanizationMethod.Nihon:
+					throw new NotImplementedException("Nihon-shiki converter not yet implemented!");
+
+				default:
+					throw new ArgumentException("Unknown romanization method!");
+			}
 		}
 
 		public static String ToHiragana(String input, Boolean passRomaji = false, Boolean useObsoleteKana = false)
@@ -179,6 +288,13 @@ namespace WanaKanaSharp
 			return tokens.ToArray();
 		}
 
+		/// <summary>
+		/// Removes Okurigana from the input string.
+		/// </summary>
+		/// <returns>The input string stripped of Okurigana.</returns>
+		/// <param name="input">The string to strip.</param>
+		/// <param name="leading">If set to <c>true</c>, leading Okurigana is removed instead of trailing Okurigana.</param>
+		/// <param name="matchKanji">Kanji match pattern.</param>
 		public static String StripOkurigana(String input, Boolean leading = false, String matchKanji = "")
 		{
 			if (!IsJapanese(input) ||

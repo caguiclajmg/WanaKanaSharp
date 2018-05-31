@@ -181,10 +181,6 @@ namespace WanaKanaSharp
 				{
 					sokuon.Insert(child.Duplicate(true));
 				}
-			}
-
-			{
-				var sokuon = root['っ'];
 
 				sokuon.TraverseChildren((node) =>
 				{
@@ -278,9 +274,8 @@ namespace WanaKanaSharp
 				node.Insert(('ア', prefix + "'a"), ('イ', prefix + "'i"), ('ウ', prefix + "'u"), ('エ', prefix + "'e"), ('オ', prefix + "'o"));
 			}
 
-			var sokuon = root.Insert(('ッ', ""));
-
 			{
+				var sokuon = root.Insert(('ッ', ""));
 				var exceptions = new[]
 				{
 					'ア', 'イ', 'ウ', 'エ', 'オ',
@@ -295,33 +290,33 @@ namespace WanaKanaSharp
 				{
 					sokuon.Insert(child.Duplicate(true));
 				}
-			}
 
-			sokuon.TraverseChildren((node) =>
-			{
-				var value = node.Value;
-
-				if (node.Value.StartsWith("ch", StringComparison.Ordinal))
+				sokuon.TraverseChildren((node) =>
 				{
-					node.Value = 't' + value;
-				}
-				else
-				{
-					node.Value = value[0] + value;
-				}
-			}, -1);
-
-			{
-				var blacklist = new[] { 'ン', 'ッ' };
-
-				root.TraverseChildren((node) =>
-				{
-					if (blacklist.Contains(node.Key)) return;
-
 					var value = node.Value;
 
-					node.Insert((Key: 'ー', Value: value + value[value.Length - 1]));
-				});
+					if (node.Value.StartsWith("ch", StringComparison.Ordinal))
+					{
+						node.Value = 't' + value;
+					}
+					else
+					{
+						node.Value = value[0] + value;
+					}
+				}, -1);
+
+				{
+					var blacklist = new[] { 'ン', 'ッ' };
+
+					root.TraverseChildren((node) =>
+					{
+						if (blacklist.Contains(node.Key)) return;
+
+						var value = node.Value;
+
+						node.Insert((Key: 'ー', Value: value + value[value.Length - 1]));
+					});
+				}
 			}
 
 			return trie;
