@@ -46,27 +46,6 @@ namespace WanaKanaSharp
             JapanesePunctuation
         }
 
-        /// <summary>
-        /// Specifies the Romanization rules to use during conversion
-        /// </summary>
-        public enum RomanizationMethod
-        {
-            /// <summary>
-            /// Hepburn Romanization
-            /// </summary>
-            Hepburn,
-
-            /// <summary>
-            /// Kunrei-shiki Romanization
-            /// </summary>
-            Kunrei,
-
-            /// <summary>
-            /// Nihon-shiki Romanization
-            /// </summary>
-            Nihon
-        }
-
         public enum IMEMode
         {
             None,
@@ -230,7 +209,6 @@ namespace WanaKanaSharp
         /// <param name="input">The string to convert.</param>
         /// <param name="upcaseKatakana">If set to <c>true</c>, Katakana characters are converted into uppercase Romaji characters.</param>
         /// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
-        /// <param name="romanizationMethod">Romanization method to use.</param>
         public static String ToRomaji(RomajiConverter romajiConverter, String input, Boolean upcaseKatakana = false, Trie<Char, String> customRomajiMapping = null)
         {
             return romajiConverter.Convert(input, upcaseKatakana, customRomajiMapping);
