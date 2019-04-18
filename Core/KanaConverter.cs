@@ -26,9 +26,12 @@
 
 using System;
 
+using WanaKanaSharp.Utility;
+
 namespace WanaKanaSharp
 {
     public interface KanaConverter
     {
+        String Convert(String input, Boolean useObsoleteKana, Trie<Char, String> customKanaMapping);
     }
 }

@@ -224,9 +224,9 @@ namespace WanaKanaSharp
             throw new NotImplementedException("WanaKana.ToKatakana(String, Boolean, Boolean) not yet implemented!");
         }
 
-        public static String ToKana(String input, Boolean useObsoleteKana = false, Trie<Char, String> customKanaMapping = null)
+        public static String ToKana(KanaConverter kanaConverter, String input, Boolean useObsoleteKana = false, Trie<Char, String> customKanaMapping = null)
         {
-            throw new NotImplementedException("WanaKana.ToKana(String, Boolean, Object) not yet implemented!");
+            return kanaConverter.Convert(input, useObsoleteKana, customKanaMapping);
         }
 
         public static String[] Tokenize(String input, Boolean compact = false, Boolean detailed = false)
