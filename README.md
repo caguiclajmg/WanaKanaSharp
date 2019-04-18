@@ -53,7 +53,9 @@ NuGet packages for WanaKanaSharp are unavailable at the moment.
     WanaKana.IsKana("これはキュートです") // true
     WanaKana.IsKanji("日本語") // true
 
-    WanaKana.ToRomaji("ひらがな"); // hiragana
-    WanaKana.ToRomaji("カタカナ"); // katakana
-    WanaKana.ToRomaji("今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
+    // Hepburn Romanization
+    var hepburnConverter = new HepburnConverter();
+    WanaKana.ToRomaji(hepburnConverter, "ひらがな"); // hiragana
+    WanaKana.ToRomaji(hepburnConverter, "カタカナ"); // katakana
+    WanaKana.ToRomaji(hepburnConverter, "今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
 ```
