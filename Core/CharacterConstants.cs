@@ -29,7 +29,6 @@ using System.Linq;
 
 namespace WanaKanaSharp
 {
-
     static class CharacterConstants
     {
         public const Char LatinLowercaseStart = '\u0061';
@@ -49,14 +48,14 @@ namespace WanaKanaSharp
         public const Char ProlongedSoundMark = '\u30FC';
         public const Char KanaSlashDot = '\u30FB';
 
-        public static (Char Start, Char End) ZenkakuNumbers = ('\uFF10', '\uFF19');
-        public static (Char Start, Char End) ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
-        public static (Char Start, Char End) ZenkakuLowercase = (ZenkakuLowercaseStart, ZenkakuLowercaseEnd);
-        public static (Char Start, Char End) ZenkakuPunctuation1 = ('\uFF01', '\uFF0F');
-        public static (Char Start, Char End) ZenkakuPunctuation2 = ('\uFF1A', '\uFF1F');
-        public static (Char Start, Char End) ZenkakuPunctuation3 = ('\uFF3B', '\uFF3F');
-        public static (Char Start, Char End) ZenkakuPunctuation4 = ('\uFF5B', '\uFF60');
-        public static (Char Start, Char End) ZenkakuSymbolsCurrency = ('\uFFE0', '\uFFEE');
+        public static readonly (Char Start, Char End) ZenkakuNumbers = ('\uFF10', '\uFF19');
+        public static readonly (Char Start, Char End) ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
+        public static readonly (Char Start, Char End) ZenkakuLowercase = (ZenkakuLowercaseStart, ZenkakuLowercaseEnd);
+        public static readonly (Char Start, Char End) ZenkakuPunctuation1 = ('\uFF01', '\uFF0F');
+        public static readonly (Char Start, Char End) ZenkakuPunctuation2 = ('\uFF1A', '\uFF1F');
+        public static readonly (Char Start, Char End) ZenkakuPunctuation3 = ('\uFF3B', '\uFF3F');
+        public static readonly (Char Start, Char End) ZenkakuPunctuation4 = ('\uFF5B', '\uFF60');
+        public static readonly (Char Start, Char End) ZenkakuSymbolsCurrency = ('\uFFE0', '\uFFEE');
 
         public static readonly (Char Start, Char End) HiraganaCharacters = ('\u3040', '\u309F');
         public static readonly (Char Start, Char End) KatakanaCharacters = ('\u30A0', '\u30FF');
