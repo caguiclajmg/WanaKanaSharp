@@ -2,7 +2,7 @@
 // RomajiConverter.cs
 //
 // Author:
-//       John Mark Gabriel Caguicla <caguicla.jmg@hapticbunnystudios.com>
+//       John Mark Gabriel Caguicla <jmg@caguicla.me>
 //
 // Copyright (c) 2019 John Mark Gabriel Caguicla
 //
@@ -23,10 +23,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
+
+using WanaKanaSharp.Utility;
+
 namespace WanaKanaSharp
 {
     public interface RomajiConverter
     {
+        String Convert(String input, Boolean upcaseKatakana, Trie<Char, String> customRomajiMapping);
     }
 }
