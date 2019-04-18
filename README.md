@@ -40,7 +40,17 @@
 
 ## Usage
 
-NuGet packages for WanaKanaSharp are unavailable at the moment.
+Pre-built packages are available from [NuGet](https://www.nuget.org/packages/WanaKanaSharp/)
+
+### Visual Studio
+
+Search for WanaKanaSharp on NuGet Package Manager
+
+![NuGet Package Manager](docs/visualstudio-package.png)
+
+### .NET Core
+
+Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
 
 ## Examples
 
