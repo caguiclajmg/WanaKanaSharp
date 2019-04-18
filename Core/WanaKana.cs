@@ -231,22 +231,9 @@ namespace WanaKanaSharp
         /// <param name="upcaseKatakana">If set to <c>true</c>, Katakana characters are converted into uppercase Romaji characters.</param>
         /// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
         /// <param name="romanizationMethod">Romanization method to use.</param>
-        public static String ToRomaji(String input, Boolean upcaseKatakana = false, Trie<Char, String> customRomajiMapping = null, RomanizationMethod romanizationMethod = RomanizationMethod.Hepburn)
+        public static String ToRomaji(RomajiConverter romajiConverter, String input, Boolean upcaseKatakana = false, Trie<Char, String> customRomajiMapping = null)
         {
-            switch (romanizationMethod)
-            {
-                case RomanizationMethod.Hepburn:
-                    return HepburnConverter.Convert(input, upcaseKatakana, customRomajiMapping);
-
-                case RomanizationMethod.Kunrei:
-                    throw new NotImplementedException("Kunrei-shiki not yet implemented!");
-
-                case RomanizationMethod.Nihon:
-                    throw new NotImplementedException("Nihon-shiki converter not yet implemented!");
-
-                default:
-                    throw new ArgumentException("Unknown romanization method!");
-            }
+            return romajiConverter.Convert(input, upcaseKatakana, customRomajiMapping);
         }
 
         public static String ToHiragana(String input, Boolean passRomaji = false, Boolean useObsoleteKana = false)

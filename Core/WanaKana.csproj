@@ -36,6 +36,7 @@
     <Compile Include="HepburnConverter.cs" />
     <Compile Include="Utility\Trie.cs" />
     <Compile Include="CharacterConstants.cs" />
+    <Compile Include="RomajiConverter.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Utility\" />

@@ -33,7 +33,7 @@ using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp
 {
-    public static class HepburnConverter
+    public class HepburnConverter : RomajiConverter
     {
         static Trie<Char, String> HepburnTree = new Trie<Char, String>();
 
@@ -70,11 +70,11 @@ namespace WanaKanaSharp
             HepburnTree.Merge(kanaTree);
         }
 
-        public static String Convert(String input, Boolean upcaseKatakana, Trie<Char, String> customRomajiMapping)
+        public String Convert(String input, Boolean upcaseKatakana, Trie<Char, String> customRomajiMapping)
         {
             if (String.IsNullOrEmpty(input)) return "";
 
-            var romajiTree = (customRomajiMapping == null) ? HepburnTree : customRomajiMapping;
+            var romajiTree = customRomajiMapping ?? HepburnTree;
 
             var builder = new StringBuilder();
 
