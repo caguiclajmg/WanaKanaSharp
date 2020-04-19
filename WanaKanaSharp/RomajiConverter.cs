@@ -32,6 +32,6 @@ namespace WanaKanaSharp
 {
     public interface RomajiConverter
     {
-        string Convert(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping);
+        string ToRomaji(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping);
     }
 }

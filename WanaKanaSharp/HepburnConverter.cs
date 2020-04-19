@@ -68,7 +68,7 @@ namespace WanaKanaSharp
             HepburnTree.Merge(kanaTree);
         }
 
-        public string Convert(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping)
+        public string ToRomaji(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping)
         {
             if (string.IsNullOrEmpty(input)) return "";
 
