@@ -72,9 +72,9 @@ namespace WanaKanaSharp.Utility
 
             public Node this[TKey key] => Children[key];
 
-            public Boolean ContainsKey(TKey key) => Children.ContainsKey(key);
+            public bool ContainsKey(TKey key) => Children.ContainsKey(key);
 
-            public Node Duplicate(Boolean copyChildren = false)
+            public Node Duplicate(bool copyChildren = false)
             {
                 var node = new Node(Key, Value);
 

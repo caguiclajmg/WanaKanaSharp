@@ -31,49 +31,49 @@ namespace WanaKanaSharp
 {
     static class CharacterConstants
     {
-        public const Char LatinLowercaseStart = '\u0061';
-        public const Char LatinLowercaseEnd = '\u007A';
-        public const Char LatinUppercaseStart = '\u0041';
-        public const Char LatinUppercaseEnd = '\u005A';
-        public const Char ZenkakuLowercaseStart = '\uFF41';
-        public const Char ZenkakuLowercaseEnd = '\uFF5A';
-        public const Char ZenkakuUppercaseStart = '\uFF21';
-        public const Char ZenkakuUppercaseEnd = '\uFF3A';
-        public const Char HiraganaStart = '\u3041';
-        public const Char HiraganaEnd = '\u3096';
-        public const Char KatakanaStart = '\u30A1';
-        public const Char KatakanaEnd = '\u30FC';
-        public const Char KanjiStart = '\u4E00';
-        public const Char KanjiEnd = '\u9FAF';
-        public const Char ProlongedSoundMark = '\u30FC';
-        public const Char KanaSlashDot = '\u30FB';
+        public const char LatinLowercaseStart = '\u0061';
+        public const char LatinLowercaseEnd = '\u007A';
+        public const char LatinUppercaseStart = '\u0041';
+        public const char LatinUppercaseEnd = '\u005A';
+        public const char ZenkakuLowercaseStart = '\uFF41';
+        public const char ZenkakuLowercaseEnd = '\uFF5A';
+        public const char ZenkakuUppercaseStart = '\uFF21';
+        public const char ZenkakuUppercaseEnd = '\uFF3A';
+        public const char HiraganaStart = '\u3041';
+        public const char HiraganaEnd = '\u3096';
+        public const char KatakanaStart = '\u30A1';
+        public const char KatakanaEnd = '\u30FC';
+        public const char KanjiStart = '\u4E00';
+        public const char KanjiEnd = '\u9FAF';
+        public const char ProlongedSoundMark = '\u30FC';
+        public const char KanaSlashDot = '\u30FB';
 
-        public static readonly (Char Start, Char End) ZenkakuNumbers = ('\uFF10', '\uFF19');
-        public static readonly (Char Start, Char End) ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
-        public static readonly (Char Start, Char End) ZenkakuLowercase = (ZenkakuLowercaseStart, ZenkakuLowercaseEnd);
-        public static readonly (Char Start, Char End) ZenkakuPunctuation1 = ('\uFF01', '\uFF0F');
-        public static readonly (Char Start, Char End) ZenkakuPunctuation2 = ('\uFF1A', '\uFF1F');
-        public static readonly (Char Start, Char End) ZenkakuPunctuation3 = ('\uFF3B', '\uFF3F');
-        public static readonly (Char Start, Char End) ZenkakuPunctuation4 = ('\uFF5B', '\uFF60');
-        public static readonly (Char Start, Char End) ZenkakuSymbolsCurrency = ('\uFFE0', '\uFFEE');
+        public static readonly (char Start, char End) ZenkakuNumbers = ('\uFF10', '\uFF19');
+        public static readonly (char Start, char End) ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);
+        public static readonly (char Start, char End) ZenkakuLowercase = (ZenkakuLowercaseStart, ZenkakuLowercaseEnd);
+        public static readonly (char Start, char End) ZenkakuPunctuation1 = ('\uFF01', '\uFF0F');
+        public static readonly (char Start, char End) ZenkakuPunctuation2 = ('\uFF1A', '\uFF1F');
+        public static readonly (char Start, char End) ZenkakuPunctuation3 = ('\uFF3B', '\uFF3F');
+        public static readonly (char Start, char End) ZenkakuPunctuation4 = ('\uFF5B', '\uFF60');
+        public static readonly (char Start, char End) ZenkakuSymbolsCurrency = ('\uFFE0', '\uFFEE');
 
-        public static readonly (Char Start, Char End) HiraganaCharacters = ('\u3040', '\u309F');
-        public static readonly (Char Start, Char End) KatakanaCharacters = ('\u30A0', '\u30FF');
-        public static readonly (Char Start, Char End) HankakuKatakana = ('\uFF66', '\uFF9F');
-        public static readonly (Char Start, Char End) KatakanaPunctuation = ('\u30FB', '\u30FC');
-        public static readonly (Char Start, Char End) KanaPunctuation = ('\uFF61', '\uFF65');
-        public static readonly (Char Start, Char End) CJKSymbolsPunctuation = ('\u3000', '\u303F');
-        public static readonly (Char Start, Char End) CommonCJK = ('\u4E00', '\u9FFF');
-        public static readonly (Char Start, Char End) RareCJK = ('\u3400', '\u4DBF');
+        public static readonly (char Start, char End) HiraganaCharacters = ('\u3040', '\u309F');
+        public static readonly (char Start, char End) KatakanaCharacters = ('\u30A0', '\u30FF');
+        public static readonly (char Start, char End) HankakuKatakana = ('\uFF66', '\uFF9F');
+        public static readonly (char Start, char End) KatakanaPunctuation = ('\u30FB', '\u30FC');
+        public static readonly (char Start, char End) KanaPunctuation = ('\uFF61', '\uFF65');
+        public static readonly (char Start, char End) CJKSymbolsPunctuation = ('\u3000', '\u303F');
+        public static readonly (char Start, char End) CommonCJK = ('\u4E00', '\u9FFF');
+        public static readonly (char Start, char End) RareCJK = ('\u3400', '\u4DBF');
 
-        public static readonly (Char Start, Char End)[] KanaRanges = {
+        public static readonly (char Start, char End)[] KanaRanges = {
             HiraganaCharacters,
             KatakanaCharacters,
             KanaPunctuation,
             HankakuKatakana
         };
 
-        public static readonly (Char Start, Char End)[] JapanesePunctuationRanges = {
+        public static readonly (char Start, char End)[] JapanesePunctuationRanges = {
             CJKSymbolsPunctuation,
             KanaPunctuation,
             KatakanaPunctuation,
@@ -84,11 +84,11 @@ namespace WanaKanaSharp
             ZenkakuSymbolsCurrency
         };
 
-        public static readonly (Char Start, Char End)[] JapaneseRanges;
+        public static readonly (char Start, char End)[] JapaneseRanges;
 
-        public static readonly (Char Start, Char End) ModernEnglish = ('\u0000', '\u007F');
+        public static readonly (char Start, char End) ModernEnglish = ('\u0000', '\u007F');
 
-        public static readonly (Char Start, Char End)[] HepburnMacronRanges = {
+        public static readonly (char Start, char End)[] HepburnMacronRanges = {
             ('\u0100', '\u0101'),
             ('\u0112', '\u0113'),
             ('\u012A', '\u012B'),
@@ -96,14 +96,14 @@ namespace WanaKanaSharp
             ('\u016A', '\u016B')
         };
 
-        public static readonly (Char Start, Char End)[] SmartQuoteRanges = {
+        public static readonly (char Start, char End)[] SmartQuoteRanges = {
             ('\u2018', '\u2019'),
             ('\u201C', '\u201D')
         };
 
-        public static readonly (Char Start, Char End)[] RomajiRanges;
+        public static readonly (char Start, char End)[] RomajiRanges;
 
-        public static readonly (Char Start, Char End)[] EnglishPunctuationRanges;
+        public static readonly (char Start, char End)[] EnglishPunctuationRanges;
 
         static CharacterConstants()
         {
