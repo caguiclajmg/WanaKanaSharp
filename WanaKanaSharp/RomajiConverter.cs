@@ -72,7 +72,7 @@ namespace WanaKanaSharp {
 
             var builder = new StringBuilder();
 
-            Int32 position = 0;
+            int position = 0;
             do {
                 var pair = Convert(romajiTree, input, position);
                 var uppercase = upcaseKatakana && WanaKana.IsKatakana(input.Substring(position, pair.Position - position));
@@ -295,7 +295,7 @@ namespace WanaKanaSharp {
             return trie;
         }
 
-        static (string Token, Int32 Position) Convert(Trie<char, string> romajiTree, string input, Int32 position) {
+        static (string Token, int Position) Convert(Trie<char, string> romajiTree, string input, int position) {
             var current = romajiTree.Root;
             var next = current.GetChild(input[position]);
 
