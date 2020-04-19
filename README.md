@@ -1,6 +1,6 @@
 <div align="center">
     <h1>ワナカナ &lt;--&gt; WanaKanaSharp &lt;--&gt; わなかな</h1>
-    <h4>A .NET utility library for checking and converting between Kanji, Hiragana, Katakana and Romaji</h4>
+    <h4>A .NET utility library for checking and converting between Hiragana, Katakana and Romaji</h4>
     <h6>This project is a port of :crocodile: <a href="https://github.com/WaniKani/WanaKana">WanaKana</a> :crab:</h6>
 </div>
 
