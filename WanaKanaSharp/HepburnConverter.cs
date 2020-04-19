@@ -37,8 +37,6 @@ namespace WanaKanaSharp
     {
         static Trie<char, string> HepburnTree = new Trie<char, string>();
 
-        static Dictionary<char, char> KatakanaMap = new Dictionary<char, char>();
-
         static HepburnConverter()
         {
             var hiraganaTree = BuildHiraganaTree();
