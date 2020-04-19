@@ -30,8 +30,10 @@ using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp
 {
-    public interface KanaConverter
+    public class KanaConverter
     {
-        string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping);
+        public static string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping) {
+            throw new NotImplementedException();
+        }
     }
 }

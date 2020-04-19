@@ -209,9 +209,9 @@ namespace WanaKanaSharp
         /// <param name="input">The string to convert.</param>
         /// <param name="upcaseKatakana">If set to <c>true</c>, Katakana characters are converted into uppercase Romaji characters.</param>
         /// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
-        public static string ToRomaji(RomajiConverter romajiConverter, string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
+        public static string ToRomaji(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
         {
-            return romajiConverter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
+            return RomajiConverter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
         }
 
         public static string ToHiragana(string input, bool passRomaji = false, bool useObsoleteKana = false)
@@ -224,9 +224,9 @@ namespace WanaKanaSharp
             throw new NotImplementedException("WanaKana.ToKatakana(string, bool, bool) not yet implemented!");
         }
 
-        public static string ToKana(KanaConverter kanaConverter, string input, bool useObsoleteKana = false, Trie<char, string> customKanaMapping = null)
+        public static string ToKana(string input, bool useObsoleteKana = false, Trie<char, string> customKanaMapping = null)
         {
-            return kanaConverter.ToKana(input, useObsoleteKana, customKanaMapping);
+            return KanaConverter.ToKana(input, useObsoleteKana, customKanaMapping);
         }
 
         public static string[] Tokenize(string input, bool compact = false, bool detailed = false)
