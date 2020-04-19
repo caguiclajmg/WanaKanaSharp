@@ -211,7 +211,7 @@ namespace WanaKanaSharp
         /// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
         public static string ToRomaji(RomajiConverter romajiConverter, string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
         {
-            return romajiConverter.Convert(input, upcaseKatakana, customRomajiMapping);
+            return romajiConverter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
         }
 
         public static string ToHiragana(string input, bool passRomaji = false, bool useObsoleteKana = false)
@@ -226,7 +226,7 @@ namespace WanaKanaSharp
 
         public static string ToKana(KanaConverter kanaConverter, string input, bool useObsoleteKana = false, Trie<char, string> customKanaMapping = null)
         {
-            return kanaConverter.Convert(input, useObsoleteKana, customKanaMapping);
+            return kanaConverter.ToKana(input, useObsoleteKana, customKanaMapping);
         }
 
         public static string[] Tokenize(string input, bool compact = false, bool detailed = false)

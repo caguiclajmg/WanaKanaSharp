@@ -32,6 +32,6 @@ namespace WanaKanaSharp
 {
     public interface KanaConverter
     {
-        string Convert(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping);
+        string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping);
     }
 }
