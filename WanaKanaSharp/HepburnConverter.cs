@@ -2,9 +2,9 @@
 // HepburnConverter.cs
 //
 // Author:
-//       John Mark Gabriel Caguicla <jmg@caguicla.me>
+//       John Mark Gabriel Caguicla <jmg.caguicla@yozuru.jp>
 //
-// Copyright (c) 2018 John Mark Gabriel Caguicla
+// Copyright (c) 2020 John Mark Gabriel Caguicla
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
