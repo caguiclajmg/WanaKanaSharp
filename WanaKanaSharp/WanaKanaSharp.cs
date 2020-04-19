@@ -59,7 +59,7 @@ namespace WanaKanaSharp
         /// <returns><c>true</c>, if the input is a Romaji character, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
         /// <param name="allowed">Additional allowed characters.</param>
-        public static Boolean IsRomaji(Char input, Regex allowed = null)
+        public static bool IsRomaji(char input, Regex allowed = null)
         {
             return IsCharInRange(input, CharacterConstants.RomajiRanges) || IsMatch(input, allowed);
         }
@@ -70,9 +70,9 @@ namespace WanaKanaSharp
         /// <returns><c>true</c>, if the string consists exclusively of Romaji characters, <c>false</c> otherwise.</returns>
         /// <param name="input">The string to test.</param>
         /// <param name="allowed">Additional allowed characters.</param>
-        public static Boolean IsRomaji(String input, Regex allowed = null)
+        public static bool IsRomaji(string input, Regex allowed = null)
         {
-            return !String.IsNullOrEmpty(input) && input.All((c) => IsRomaji(c, allowed));
+            return !string.IsNullOrEmpty(input) && input.All((c) => IsRomaji(c, allowed));
         }
 
         /// <summary>
@@ -80,7 +80,7 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the input is a Hiragana character, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
-        public static Boolean IsHiragana(Char input)
+        public static bool IsHiragana(char input)
         {
             return (input == CharacterConstants.ProlongedSoundMark) || IsCharInRange(input, CharacterConstants.HiraganaStart, CharacterConstants.HiraganaEnd);
         }
@@ -90,9 +90,9 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the string consists exclusively of Hiragana characters, <c>false</c> otherwise.</returns>
         /// <param name="input">Input.</param>
-        public static Boolean IsHiragana(String input)
+        public static bool IsHiragana(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.All(IsHiragana);
+            return !string.IsNullOrEmpty(input) && input.All(IsHiragana);
         }
 
         /// <summary>
@@ -100,7 +100,7 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the input is a Katakana character, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
-        public static Boolean IsKatakana(Char input)
+        public static bool IsKatakana(char input)
         {
             return IsCharInRange(input, CharacterConstants.KatakanaStart, CharacterConstants.KatakanaEnd);
         }
@@ -110,9 +110,9 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the string consists exclusively of Katakana characters, <c>false</c> otherwise.</returns>
         /// <param name="input">Input.</param>
-        public static Boolean IsKatakana(String input)
+        public static bool IsKatakana(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.All(IsKatakana);
+            return !string.IsNullOrEmpty(input) && input.All(IsKatakana);
         }
 
         /// <summary>
@@ -120,7 +120,7 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the input is a Kana character, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
-        public static Boolean IsKana(Char input)
+        public static bool IsKana(char input)
         {
             return IsHiragana(input) || IsKatakana(input);
         }
@@ -130,9 +130,9 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the string consists exclusively of Kana characters, <c>false</c> otherwise.</returns>
         /// <param name="input">Input.</param>
-        public static Boolean IsKana(String input)
+        public static bool IsKana(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.All(IsKana);
+            return !string.IsNullOrEmpty(input) && input.All(IsKana);
         }
 
         /// <summary>
@@ -140,7 +140,7 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the input is a Kanji character, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
-        public static Boolean IsKanji(Char input)
+        public static bool IsKanji(char input)
         {
             return IsCharInRange(input, CharacterConstants.KanjiStart, CharacterConstants.KanjiEnd);
         }
@@ -150,9 +150,9 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the string consists exclusively of Kanji characters, <c>false</c> otherwise.</returns>
         /// <param name="input">Input.</param>
-        public static Boolean IsKanji(String input)
+        public static bool IsKanji(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.All(IsKanji);
+            return !string.IsNullOrEmpty(input) && input.All(IsKanji);
         }
 
         /// <summary>
@@ -161,7 +161,7 @@ namespace WanaKanaSharp
         /// <returns><c>true</c>, if the input is a Japanese character, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
         /// <param name="allowed">Additional allowed characters.</param>
-        public static Boolean IsJapanese(Char input, Regex allowed = null)
+        public static bool IsJapanese(char input, Regex allowed = null)
         {
             return IsCharInRange(input, CharacterConstants.JapaneseRanges) || IsMatch(input, allowed);
         }
@@ -172,12 +172,12 @@ namespace WanaKanaSharp
         /// <returns><c>true</c>, if the string consists exclusively of Japanese characters, <c>false</c> otherwise.</returns>
         /// <param name="input">The string to test.</param>
         /// <param name="allowed">Additional allowed characters.</param>
-        public static Boolean IsJapanese(String input, Regex allowed = null)
+        public static bool IsJapanese(string input, Regex allowed = null)
         {
-            return !String.IsNullOrEmpty(input) && input.All((c) => IsJapanese(c, allowed));
+            return !string.IsNullOrEmpty(input) && input.All((c) => IsJapanese(c, allowed));
         }
 
-        public static Boolean IsMixed(String input, Boolean passKanji = true)
+        public static bool IsMixed(string input, bool passKanji = true)
         {
             return (HasHiragana(input) || HasKatakana(input)) && HasRomaji(input) && (passKanji || !HasKanji(input));
         }
@@ -187,7 +187,7 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the input is an English punctuation, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
-        public static Boolean IsEnglishPunctuation(Char input)
+        public static bool IsEnglishPunctuation(char input)
         {
             return IsCharInRange(input, CharacterConstants.EnglishPunctuationRanges);
         }
@@ -197,7 +197,7 @@ namespace WanaKanaSharp
         /// </summary>
         /// <returns><c>true</c>, if the input is an Japanese punctuation, <c>false</c> otherwise.</returns>
         /// <param name="input">The character to test.</param>
-        public static Boolean IsJapanesePunctuation(Char input)
+        public static bool IsJapanesePunctuation(char input)
         {
             return IsCharInRange(input, CharacterConstants.JapanesePunctuationRanges);
         }
@@ -209,31 +209,31 @@ namespace WanaKanaSharp
         /// <param name="input">The string to convert.</param>
         /// <param name="upcaseKatakana">If set to <c>true</c>, Katakana characters are converted into uppercase Romaji characters.</param>
         /// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
-        public static String ToRomaji(RomajiConverter romajiConverter, String input, Boolean upcaseKatakana = false, Trie<Char, String> customRomajiMapping = null)
+        public static string ToRomaji(RomajiConverter romajiConverter, string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
         {
             return romajiConverter.Convert(input, upcaseKatakana, customRomajiMapping);
         }
 
-        public static String ToHiragana(String input, Boolean passRomaji = false, Boolean useObsoleteKana = false)
+        public static string ToHiragana(string input, bool passRomaji = false, bool useObsoleteKana = false)
         {
-            throw new NotImplementedException("WanaKana.ToHiragana(String, Boolean, Boolean) not yet implemented!");
+            throw new NotImplementedException("WanaKana.ToHiragana(string, bool, bool) not yet implemented!");
         }
 
-        public static String ToKatakana(String input, Boolean passRomaji = false, Boolean useObsoleteKana = false)
+        public static string ToKatakana(string input, bool passRomaji = false, bool useObsoleteKana = false)
         {
-            throw new NotImplementedException("WanaKana.ToKatakana(String, Boolean, Boolean) not yet implemented!");
+            throw new NotImplementedException("WanaKana.ToKatakana(string, bool, bool) not yet implemented!");
         }
 
-        public static String ToKana(KanaConverter kanaConverter, String input, Boolean useObsoleteKana = false, Trie<Char, String> customKanaMapping = null)
+        public static string ToKana(KanaConverter kanaConverter, string input, bool useObsoleteKana = false, Trie<char, string> customKanaMapping = null)
         {
             return kanaConverter.Convert(input, useObsoleteKana, customKanaMapping);
         }
 
-        public static String[] Tokenize(String input, Boolean compact = false, Boolean detailed = false)
+        public static string[] Tokenize(string input, bool compact = false, bool detailed = false)
         {
-            if (String.IsNullOrEmpty(input)) return null;
+            if (string.IsNullOrEmpty(input)) return null;
 
-            var tokens = new List<String>();
+            var tokens = new List<string>();
 
             Int32 position = 0;
             do
@@ -260,17 +260,17 @@ namespace WanaKanaSharp
         /// <param name="input">The string to strip.</param>
         /// <param name="leading">If set to <c>true</c>, leading Okurigana is removed instead of trailing Okurigana.</param>
         /// <param name="matchKanji">Kanji match pattern.</param>
-        public static String StripOkurigana(String input, Boolean leading = false, String matchKanji = "")
+        public static string StripOkurigana(string input, bool leading = false, string matchKanji = "")
         {
             if (!IsJapanese(input) ||
                 (leading && !IsKana(input[0])) ||
                 (!leading && !IsKana(input[input.Length - 1])) ||
-                ((!String.IsNullOrEmpty(matchKanji) && !HasKanji(matchKanji)) || (String.IsNullOrEmpty(matchKanji) && IsKana(input))))
+                ((!string.IsNullOrEmpty(matchKanji) && !HasKanji(matchKanji)) || (string.IsNullOrEmpty(matchKanji) && IsKana(input))))
             {
                 return input;
             }
 
-            String[] tokens = Tokenize(String.IsNullOrEmpty(matchKanji) ? input : matchKanji);
+            string[] tokens = Tokenize(string.IsNullOrEmpty(matchKanji) ? input : matchKanji);
             Regex regex = new Regex(leading ? ('^' + tokens[0]) : (tokens[tokens.Length - 1] + '$'));
             input = regex.Replace(input, "");
 
@@ -287,7 +287,7 @@ namespace WanaKanaSharp
             throw new NotImplementedException("WanaKana.Unbind() not yet implemented!");
         }
 
-        static TokenType GetTokenType(Char input)
+        static TokenType GetTokenType(char input)
         {
             if (IsRomaji(input)) return TokenType.Romaji;
             if (IsHiragana(input)) return TokenType.Hiragana;
@@ -299,52 +299,52 @@ namespace WanaKanaSharp
             return TokenType.Unknown;
         }
 
-        static Boolean HasRomaji(String input, Regex allowed = null)
+        static bool HasRomaji(string input, Regex allowed = null)
         {
-            return !String.IsNullOrEmpty(input) && input.Any((c) => IsRomaji(c, allowed));
+            return !string.IsNullOrEmpty(input) && input.Any((c) => IsRomaji(c, allowed));
         }
 
-        static Boolean HasHiragana(String input)
+        static bool HasHiragana(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.Any(IsHiragana);
+            return !string.IsNullOrEmpty(input) && input.Any(IsHiragana);
         }
 
-        static Boolean HasKatakana(String input)
+        static bool HasKatakana(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.Any(IsKatakana);
+            return !string.IsNullOrEmpty(input) && input.Any(IsKatakana);
         }
 
-        static Boolean HasKana(String input)
+        static bool HasKana(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.Any(IsKana);
+            return !string.IsNullOrEmpty(input) && input.Any(IsKana);
         }
 
-        static Boolean HasKanji(String input)
+        static bool HasKanji(string input)
         {
-            return !String.IsNullOrEmpty(input) && input.Any(IsKanji);
+            return !string.IsNullOrEmpty(input) && input.Any(IsKanji);
         }
 
-        static Boolean HasJapanese(String input, Regex allowed = null)
+        static bool HasJapanese(string input, Regex allowed = null)
         {
-            return !String.IsNullOrEmpty(input) && input.Any((c) => IsJapanese(c, allowed));
+            return !string.IsNullOrEmpty(input) && input.Any((c) => IsJapanese(c, allowed));
         }
 
-        static Boolean IsCharInRange(Char input, Char start, Char end)
+        static bool IsCharInRange(char input, char start, char end)
         {
             return (input >= start) && (input <= end);
         }
 
-        static Boolean IsCharInRange(Char input, (Char Start, Char End) range)
+        static bool IsCharInRange(char input, (char Start, char End) range)
         {
             return IsCharInRange(input, range.Start, range.End);
         }
 
-        static Boolean IsCharInRange(Char input, params (Char Start, Char End)[] ranges)
+        static bool IsCharInRange(char input, params (char Start, char End)[] ranges)
         {
             return ranges.Any((r) => IsCharInRange(input, r));
         }
 
-        static Boolean IsMatch(Char input, Regex allowed)
+        static bool IsMatch(char input, Regex allowed)
         {
             return (allowed != null) && (allowed.IsMatch(input.ToString()));
         }

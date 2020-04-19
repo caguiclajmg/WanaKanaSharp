@@ -35,15 +35,15 @@ namespace WanaKanaSharp
 {
     public class HepburnConverter : RomajiConverter
     {
-        static Trie<Char, String> HepburnTree = new Trie<Char, String>();
+        static Trie<char, string> HepburnTree = new Trie<char, string>();
 
-        static Dictionary<Char, Char> KatakanaMap = new Dictionary<Char, Char>();
+        static Dictionary<char, char> KatakanaMap = new Dictionary<char, char>();
 
         static HepburnConverter()
         {
             var hiraganaTree = BuildHiraganaTree();
             var katakanaTree = BuildKatakanaTree();
-            var kanaTree = Trie<Char, String>.Merge(hiraganaTree, katakanaTree);
+            var kanaTree = Trie<char, string>.Merge(hiraganaTree, katakanaTree);
 
             var root = HepburnTree.Root;
 
@@ -70,9 +70,9 @@ namespace WanaKanaSharp
             HepburnTree.Merge(kanaTree);
         }
 
-        public String Convert(String input, Boolean upcaseKatakana, Trie<Char, String> customRomajiMapping)
+        public string Convert(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping)
         {
-            if (String.IsNullOrEmpty(input)) return "";
+            if (string.IsNullOrEmpty(input)) return "";
 
             var romajiTree = customRomajiMapping ?? HepburnTree;
 
@@ -90,9 +90,9 @@ namespace WanaKanaSharp
             return builder.ToString();
         }
 
-        static Trie<Char, String> BuildHiraganaTree()
+        static Trie<char, string> BuildHiraganaTree()
         {
-            var trie = new Trie<Char, String>();
+            var trie = new Trie<char, string>();
             var root = trie.Root;
 
             root.Insert(('あ', "a"), ('い', "i"), ('う', "u"), ('え', "e"), ('お', "o"),
@@ -199,9 +199,9 @@ namespace WanaKanaSharp
             return trie;
         }
 
-        static Trie<Char, String> BuildKatakanaTree()
+        static Trie<char, string> BuildKatakanaTree()
         {
-            var trie = new Trie<Char, String>();
+            var trie = new Trie<char, string>();
             var root = trie.Root;
 
             root.Insert(('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
@@ -321,7 +321,7 @@ namespace WanaKanaSharp
             return trie;
         }
 
-        static (String Token, Int32 Position) Convert(Trie<Char, String> romajiTree, String input, Int32 position)
+        static (string Token, Int32 Position) Convert(Trie<char, string> romajiTree, string input, Int32 position)
         {
             var current = romajiTree.Root;
             var next = current.GetChild(input[position]);
