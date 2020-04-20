@@ -27,184 +27,92 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
 
-namespace WanaKanaSharp.Utility
-{
-    public class Trie<TKey, TValue>
-    {
-        public class Node : IEnumerable<Node>
-        {
-            class Enumerator : IEnumerator<Node>
-            {
-                Dictionary<TKey, Node>.Enumerator DictionaryEnumerator;
-
-                public Node Current => DictionaryEnumerator.Current.Value;
-
-                object IEnumerator.Current => Current;
-
-                public Enumerator(Dictionary<TKey, Node>.Enumerator enumerator)
-                {
-                    DictionaryEnumerator = enumerator;
-                }
-
-                public void Dispose()
-                {
-                    DictionaryEnumerator.Dispose();
-                }
-
-                public bool MoveNext() => DictionaryEnumerator.MoveNext();
-
-                public void Reset() => throw new NotImplementedException();
-            }
-
-            public TKey Key { get; private set; }
-            public Node Parent { get; private set; }
+namespace WanaKanaSharp.Utility {
+    public class Trie<TKey, TValue> {
+        public class Node : Dictionary<TKey, Node> {
             public TValue Value { get; set; }
 
-            Dictionary<TKey, Node> Children = new Dictionary<TKey, Node>();
+            public Node() { Value = default; }
+            public Node(TValue value) { Value = value; }
 
-            public Node(TKey key, TValue value)
-            {
-                Key = key;
-                Parent = null;
-                Value = value;
-            }
+            public Node Duplicate(bool duplicateChildren = true) {
+                var node = new Node { Value = Value };
 
-            public Node this[TKey key] => Children[key];
-
-            public bool ContainsKey(TKey key) => Children.ContainsKey(key);
-
-            public Node Duplicate(bool copyChildren = false)
-            {
-                var node = new Node(Key, Value);
-
-                if (copyChildren)
-                {
-                    foreach (var child in this)
-                    {
-                        var c = child.Duplicate(copyChildren);
-                        node.Insert(c);
-                    }
-                }
+                foreach(var pair in this) node.Add(pair.Key, duplicateChildren ? pair.Value.Duplicate(duplicateChildren) : pair.Value);
 
                 return node;
             }
 
-            public Node GetChild(TKey key)
-            {
-                if (Children.TryGetValue(key, out Node node)) return node;
-
-                return null;
+            public Node Add(TKey key, TValue value) {
+                var node = new Node() { Value = value };
+                Add(key, node);
+                return node;
             }
 
-            public IEnumerator<Node> GetEnumerator()
-            {
-                return new Enumerator(Children.GetEnumerator());
+            public Node Add((TKey Key, TValue Value) pair) => Add(pair.Key, pair.Value);
+
+            public IEnumerable<Node> Add(params (TKey Key, TValue Value)[] pairs) {
+                var nodes = new List<Node>();
+                foreach(var pair in pairs) nodes.Add(Add(pair));
+                return nodes;
             }
 
-            public Node Insert(Node child)
-            {
-                child.Parent = this;
-                Children.Add(child.Key, child);
-                return child;
+            public Node Add(IEnumerable<TKey> path, TValue value) {
+                var current = this;
+                foreach(var key in path) current = current.ContainsKey(key) ? current[key] : current.Add(key, default);
+                current.Value = value;
+                return current;
             }
 
-            public void Insert(params Node[] children)
-            {
-                foreach (var child in children)
-                {
-                    Insert(child);
+            public Node Add(IEnumerable<TKey> path, Node node) {
+                var current = this;
+                foreach(var key in path.Take(path.Count() -1)) current = current.ContainsKey(key) ? current[key] : current.Add(key, default);
+                current.Add(path.Last(), node);
+                return node;
+            }
+
+            public void TraverseChildren(Action<KeyValuePair<TKey, Node>> action, uint? maxDepth = null) {
+                TraverseChildren(action, 0, new List<Node>(), maxDepth);
+            }
+
+            private void TraverseChildren(Action<KeyValuePair<TKey, Node>> action, uint currentDepth, IList<Node> visited, uint? maxDepth) {
+                if(maxDepth.HasValue && currentDepth == maxDepth.Value) return;
+
+                foreach(var pair in this) {
+                    if(visited.Contains(pair.Value)) continue;
+                    visited.Add(pair.Value);
+
+                    action(pair);
+                    pair.Value.TraverseChildren(action, currentDepth + 1, visited, maxDepth);
                 }
             }
 
-            public Node Insert((TKey Key, TValue Value) child)
-            {
-                var node = new Node(child.Key, child.Value);
-                return Insert(node);
+            public Node TryGetChild(TKey key) {
+                return ContainsKey(key) ? this[key] : null;
             }
 
-            public void Insert(params (TKey Key, TValue Value)[] children)
-            {
-                foreach (var child in children)
-                {
-                    Insert(child);
-                }
-            }
-
-            public void Remove(params TKey[] keys)
-            {
-                foreach (var key in keys)
-                {
-                    if (!Children.ContainsKey(key)) throw new KeyNotFoundException();
-
-                    var node = Children[key];
-                    node.Key = default(TKey);
-                    Children.Remove(key);
-                }
-            }
-
-            public void Traverse(Action<Node> action, Int32 maxDepth = -1)
-            {
-                Traverse(action, 0, maxDepth);
-            }
-
-            public void TraverseChildren(Action<Node> action, Int32 maxDepth = 0)
-            {
-                foreach (var child in this)
-                {
-                    child.Traverse(action, 0, maxDepth);
-                }
-            }
-
-            void Traverse(Action<Node> action, Int32 currentDepth, Int32 maxDepth)
-            {
-                action(this);
-
-                if (currentDepth == maxDepth) return;
-
-                foreach (var child in this)
-                {
-                    child.Traverse(action, currentDepth + 1, maxDepth);
-                }
-            }
-
-            IEnumerator IEnumerable.GetEnumerator()
-            {
-                return GetEnumerator();
+            public Node TryGetChild(IEnumerable<TKey> path) {
+                var current = this;
+                foreach(var key in path) if(ContainsKey(key)) current = current[key]; else return null;
+                return current;
             }
         }
 
-        public Node this[TKey key]
-        {
-            get { return Root[key]; }
-        }
-
-        public Node Root { get; } = new Node(default(TKey), default(TValue));
-
-        public void Merge(Trie<TKey, TValue> trie)
-        {
-            trie.Root.TraverseChildren((node) =>
-            {
-                Root.Insert(node.Duplicate(true));
-            });
-        }
-
-        public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b)
-        {
+        public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b) {
             var trie = new Trie<TKey, TValue>();
             var root = trie.Root;
 
-            a.Root.TraverseChildren((node) =>
-            {
-                root.Insert(node.Duplicate(true));
-            });
-
-            b.Root.TraverseChildren((node) =>
-            {
-                root.Insert(node.Duplicate(true));
-            });
+            foreach(var pair in a.Root) root.Add(pair.Key, pair.Value.Duplicate());
+            foreach(var pair in b.Root) root.Add(pair.Key, pair.Value.Duplicate());
 
             return trie;
         }
+
+        public Node Root { get; } = new Node();
     }
 }

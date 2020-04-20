@@ -33,7 +33,7 @@ using WanaKanaSharp.Utility;
 namespace WanaKanaSharp.Test
 {
     [TestFixture()]
-    public class HepburnConverterTest
+    public class RomajiConverterTest
     {
         [TestCase(null, ExpectedResult = "")]
         [TestCase("", ExpectedResult = "")]
