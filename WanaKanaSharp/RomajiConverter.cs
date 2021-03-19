@@ -38,7 +38,7 @@ namespace WanaKanaSharp {
         static RomajiConverter() {
             var hiraganaTree = BuildHiraganaTree();
             var katakanaTree = BuildKatakanaTree();
-            var kanaTree = Trie<char, string>.Merge(hiraganaTree, katakanaTree);
+            var kanaTree = Trie<char, string>.Merge(hiraganaTree, katakanaTree, (a, b) => b.Value);
 
             var root = HepburnTree.Root;
 
@@ -62,13 +62,13 @@ namespace WanaKanaSharp {
                         ('｝', "}"),
                         ('　', " "));
 
-            HepburnTree.Merge(kanaTree);
+            HepburnTree.Merge(kanaTree, (a, b) => b.Value);
         }
 
         public static string ToRomaji(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping) {
-            if(string.IsNullOrEmpty(input)) return "";
+            if(string.IsNullOrEmpty(input)) return string.Empty;
 
-            var romajiTree = customRomajiMapping ?? HepburnTree;
+            var romajiTree = Trie<char, string>.Merge(HepburnTree, customRomajiMapping ?? Trie<char, string>.Empty, (a, b) => b.Value);
 
             var builder = new StringBuilder();
 

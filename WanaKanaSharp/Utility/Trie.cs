@@ -32,6 +32,8 @@ namespace WanaKanaSharp.Utility
 {
     public class Trie<TKey, TValue>
     {
+        public static Trie<TKey, TValue> Empty { get; } = new Trie<TKey, TValue>();
+
         public class Node : IEnumerable<Node>
         {
             class Enumerator : IEnumerator<Node>
@@ -62,6 +64,7 @@ namespace WanaKanaSharp.Utility
             public TValue Value { get; set; }
 
             Dictionary<TKey, Node> Children = new Dictionary<TKey, Node>();
+            public bool IsLeaf { get => Children.Count == 0; }
 
             public Node(TKey key, TValue value)
             {
@@ -131,6 +134,23 @@ namespace WanaKanaSharp.Utility
                 }
             }
 
+            public void Merge(Node other, Func<Node, Node, TValue> valueMerger)
+            {
+                Value = valueMerger(this, other);
+
+                foreach (var child in other.Children)
+                {
+                    if (Children.ContainsKey(child.Key))
+                    {
+                        Children[child.Key].Merge(child.Value, valueMerger);
+                    }
+                    else
+                    {
+                        Insert(child.Value.Duplicate(true));
+                    }
+                }
+            }
+
             public void Remove(params TKey[] keys)
             {
                 foreach (var key in keys)
@@ -181,28 +201,17 @@ namespace WanaKanaSharp.Utility
 
         public Node Root { get; } = new Node(default(TKey), default(TValue));
 
-        public void Merge(Trie<TKey, TValue> trie)
+        public void Merge(Trie<TKey, TValue> trie, Func<Node, Node, TValue> valueMerger)
         {
-            trie.Root.TraverseChildren((node) =>
-            {
-                Root.Insert(node.Duplicate(true));
-            });
+            Root.Merge(trie.Root, valueMerger);
         }
 
-        public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b)
+        public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b, Func<Node, Node, TValue> valueMerger)
         {
             var trie = new Trie<TKey, TValue>();
             var root = trie.Root;
-
-            a.Root.TraverseChildren((node) =>
-            {
-                root.Insert(node.Duplicate(true));
-            });
-
-            b.Root.TraverseChildren((node) =>
-            {
-                root.Insert(node.Duplicate(true));
-            });
+            root.Merge(a.Root, (t, u) => u.Value);
+            root.Merge(b.Root, (t, u) => u.Value);
 
             return trie;
         }
