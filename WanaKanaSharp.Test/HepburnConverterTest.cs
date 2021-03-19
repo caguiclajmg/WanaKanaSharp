@@ -65,6 +65,7 @@ namespace WanaKanaSharp.Test
         [TestCase("おんよみ", ExpectedResult = "on'yomi")]
         [TestCase("んよ んあ んゆ", ExpectedResult = "n'yo n'a n'yu")]
         [TestCase("シンヨ", ExpectedResult = "shin'yo")]
+        [TestCase("ふ", ExpectedResult = "fu")]
         public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null) => WanaKana.ToRomaji(input, upcaseKatakana, customRomajiMapping);
     }
 }
