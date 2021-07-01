@@ -235,10 +235,10 @@ namespace WanaKanaSharp
 
             var tokens = new List<string>();
 
-            Int32 position = 0;
+            int position = 0;
             do
             {
-                Int32 start = position;
+                int start = position;
                 TokenType type = GetTokenType(input[position]);
 
                 do
