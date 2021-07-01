@@ -163,12 +163,12 @@ namespace WanaKanaSharp.Utility
                 }
             }
 
-            public void Traverse(Action<Node> action, Int32 maxDepth = -1)
+            public void Traverse(Action<Node> action, int maxDepth = -1)
             {
                 Traverse(action, 0, maxDepth);
             }
 
-            public void TraverseChildren(Action<Node> action, Int32 maxDepth = 0)
+            public void TraverseChildren(Action<Node> action, int maxDepth = 0)
             {
                 foreach (var child in this)
                 {
@@ -176,7 +176,7 @@ namespace WanaKanaSharp.Utility
                 }
             }
 
-            void Traverse(Action<Node> action, Int32 currentDepth, Int32 maxDepth)
+            void Traverse(Action<Node> action, int currentDepth, int maxDepth)
             {
                 action(this);
 
