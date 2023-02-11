@@ -38,7 +38,7 @@
     </table>
 </div>
 
-> 🚧 **Warning**: Pre-release versions (<1.0) are experimental, expect API breakage!
+> **Warning** Pre-release versions (<1.0) are experimental, expect API breakage!
 
 ## Usage
 
