@@ -58,20 +58,19 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
 
 ```cs
     // Utility functions
-    Assert.IsTrue(WanaKana.IsRomaji("hello"));
-    Assert.IsTrue(WanaKana.IsHiragana("こんにちは"));
-    Assert.IsTrue(WanaKana.IsKatakana("テレビ"));
-    Assert.IsTrue(WanaKana.IsKana("これはキュートです"));
-    Assert.IsTrue(WanaKana.IsKanji("日本語"));
+    WanaKana.IsRomaji("hello"); // true
+    WanaKana.IsHiragana("こんにちは"); // true
+    WanaKana.IsKatakana("テレビ"); // true
+    WanaKana.IsKana("これはキュートです"); // true
+    WanaKana.IsKanji("日本語"); // true
 
     // Romaji conversion
     RomajiConverter romajiConverter = new HepburnRomajiConverter();
-    Assert.AreEqual("hiragana", romajiConverter.ToRomaji("ひらがな", false, null));
-    Assert.AreEqual("katakana", romajiConverter.ToRomaji("カタカナ", false, null));
-    Assert.AreEqual("今日 ha PAATEI", romajiConverter.ToRomaji("今日 は パーティ", true, null));
+    romajiConverter.ToRomaji("ひらがな", false, null); // hiragana
+    romajiConverter.ToRomaji("カタカナ", false, null); // katakana
 
     // Kana conversion
     KanaConverter kanaConverter = new DefaultKanaConverter();
-    Assert.AreEqual("ひらがな", kanaConverter.ToKana("hiragana", null));
-    Assert.AreEqual("カタカナ", kanaConverter.ToKana("KATAKANA", null));
+    kanaConverter.ToKana("hiragana", null); // ひらがな
+    kanaConverter.ToKana("KATAKANA", null); // カタカナ
 ```
