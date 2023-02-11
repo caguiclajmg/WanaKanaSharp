@@ -33,7 +33,7 @@ using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp {
     public class RomajiConverter {
-        static Trie<char, string> HepburnTree = new Trie<char, string>();
+        static readonly Trie<char, string> HepburnTree = new Trie<char, string>();
 
         static RomajiConverter() {
             var hiraganaTree = BuildHiraganaTree();
@@ -42,12 +42,8 @@ namespace WanaKanaSharp {
 
             var root = HepburnTree.Root;
 
-            root.Insert(('。', "."),
-                        ('、', ","),
-                        ('：', ":"),
-                        ('・', "/"),
-                        ('！', "!"),
-                        ('？', "?"),
+            root.Add(('。', "."), ('、', ","),('：', ":"),
+                     ('・', "/"),('！', "!"),('？', "?"),
                         ('〜', "~"),
                         ('ー', "-"),
                         ('「', "‘"),
@@ -62,7 +58,9 @@ namespace WanaKanaSharp {
                         ('｝', "}"),
                         ('　', " "));
 
-            HepburnTree.Merge(kanaTree, (a, b) => b.Value);
+            foreach(var pair in kanaTree.Root) {
+                root.Add(pair.Key, pair.Value);
+            }
         }
 
         public static string ToRomaji(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping) {
@@ -87,7 +85,7 @@ namespace WanaKanaSharp {
             var trie = new Trie<char, string>();
             var root = trie.Root;
 
-            root.Insert(('あ', "a"), ('い', "i"), ('う', "u"), ('え', "e"), ('お', "o"),
+            root.Add(('あ', "a"), ('い', "i"), ('う', "u"), ('え', "e"), ('お', "o"),
                         ('か', "ka"), ('き', "ki"), ('く', "ku"), ('け', "ke"), ('こ', "ko"),
                         ('さ', "sa"), ('し', "shi"), ('す', "su"), ('せ', "se"), ('そ', "so"),
                         ('た', "ta"), ('ち', "chi"), ('つ', "tsu"), ('て', "te"), ('と', "to"),
@@ -113,7 +111,7 @@ namespace WanaKanaSharp {
                     var node = root[key];
                     var prefix = node.Value[0];
 
-                    root[key].Insert(('ゃ', prefix + "ya"), ('ゅ', prefix + "yu"), ('ょ', prefix + "yo"));
+                    root[key].Add(('ゃ', prefix + "ya"), ('ゅ', prefix + "yu"), ('ょ', prefix + "yo"));
                 }
             }
 
@@ -124,7 +122,7 @@ namespace WanaKanaSharp {
                     var node = root[key];
                     var prefix = node.Value[0];
 
-                    node.Insert(('ゃ', prefix + "ha"), ('ゅ', prefix + "hu"), ('ょ', prefix + "ho"));
+                    node.Add(('ゃ', prefix + "ha"), ('ゅ', prefix + "hu"), ('ょ', prefix + "ho"));
                 }
             }
 
@@ -135,7 +133,7 @@ namespace WanaKanaSharp {
                     var node = root[key];
                     var prefix = node.Value[0];
 
-                    node.Insert(('ゃ', prefix + "a"), ('ゅ', prefix + "u"), ('ょ', prefix + "o"));
+                    node.Add(('ゃ', prefix + "a"), ('ゅ', prefix + "u"), ('ょ', prefix + "o"));
                 }
             }
 
@@ -143,18 +141,18 @@ namespace WanaKanaSharp {
                 var node = root['ん'];
                 var prefix = node.Value[0];
 
-                node.Insert(('や', prefix + "'ya"), ('ゆ', prefix + "'yu"), ('よ', prefix + "'yo"));
+                node.Add(('や', prefix + "'ya"), ('ゆ', prefix + "'yu"), ('よ', prefix + "'yo"));
             }
 
             {
                 var node = root['ん'];
                 var prefix = node.Value[0];
 
-                node.Insert(('あ', prefix + "'a"), ('い', prefix + "'i"), ('う', prefix + "'u"), ('え', prefix + "'e"), ('お', prefix + "'o"));
+                node.Add(('あ', prefix + "'a"), ('い', prefix + "'i"), ('う', prefix + "'u"), ('え', prefix + "'e"), ('お', prefix + "'o"));
             }
 
             {
-                var sokuon = root.Insert(('っ', ""));
+                var sokuon = root.Add(('っ', ""));
                 var exceptions = new[]
                 {
                     'あ', 'い', 'う', 'え', 'お',
@@ -165,11 +163,12 @@ namespace WanaKanaSharp {
                     'っ'
                 };
 
-                foreach(var child in root.Where((node) => !exceptions.Contains(node.Key))) {
-                    sokuon.Insert(child.Duplicate(true));
+                foreach(var pair in root.Where(node => !exceptions.Contains(node.Key))) {
+                    sokuon.Add(pair.Key, pair.Value.Duplicate());
                 }
 
-                sokuon.TraverseChildren((node) => {
+                sokuon.TraverseChildren(pair => {
+                    var node = pair.Value;
                     var value = node.Value;
 
                     if(node.Value.StartsWith("ch", StringComparison.Ordinal)) {
@@ -177,7 +176,7 @@ namespace WanaKanaSharp {
                     } else {
                         node.Value = value[0] + value;
                     }
-                }, -1);
+                });
             }
 
             return trie;
@@ -187,7 +186,7 @@ namespace WanaKanaSharp {
             var trie = new Trie<char, string>();
             var root = trie.Root;
 
-            root.Insert(('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
+            root.Add(('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
                         ('カ', "ka"), ('キ', "ki"), ('ク', "ku"), ('ケ', "ke"), ('コ', "ko"),
                         ('サ', "sa"), ('シ', "shi"), ('ス', "su"), ('セ', "se"), ('ソ', "so"),
                         ('タ', "ta"), ('チ', "chi"), ('ツ', "tsu"), ('テ', "te"), ('ト', "to"),
@@ -213,7 +212,7 @@ namespace WanaKanaSharp {
                     var node = root[key];
                     var prefix = node.Value[0];
 
-                    root[key].Insert(('ャ', prefix + "ya"), ('ュ', prefix + "yu"), ('ョ', prefix + "yo"));
+                    root[key].Add(('ャ', prefix + "ya"), ('ュ', prefix + "yu"), ('ョ', prefix + "yo"));
                 }
             }
 
@@ -224,7 +223,7 @@ namespace WanaKanaSharp {
                     var node = root[key];
                     var prefix = node.Value[0];
 
-                    node.Insert(('ャ', prefix + "ha"), ('ュ', prefix + "hu"), ('ョ', prefix + "ho"));
+                    node.Add(('ャ', prefix + "ha"), ('ュ', prefix + "hu"), ('ョ', prefix + "ho"));
                 }
             }
 
@@ -235,7 +234,7 @@ namespace WanaKanaSharp {
                     var node = root[key];
                     var prefix = node.Value[0];
 
-                    node.Insert(('ャ', prefix + "a"), ('ュ', prefix + "u"), ('ョ', prefix + "o"));
+                    node.Add(('ャ', prefix + "a"), ('ュ', prefix + "u"), ('ョ', prefix + "o"));
                 }
             }
 
@@ -243,18 +242,18 @@ namespace WanaKanaSharp {
                 var node = root['ン'];
                 var prefix = node.Value[0];
 
-                node.Insert(('ヤ', prefix + "'ya"), ('ユ', prefix + "'yu"), ('ヨ', prefix + "'yo"));
+                node.Add(('ヤ', prefix + "'ya"), ('ユ', prefix + "'yu"), ('ヨ', prefix + "'yo"));
             }
 
             {
                 var node = root['ン'];
                 var prefix = node.Value[0];
 
-                node.Insert(('ア', prefix + "'a"), ('イ', prefix + "'i"), ('ウ', prefix + "'u"), ('エ', prefix + "'e"), ('オ', prefix + "'o"));
+                node.Add(('ア', prefix + "'a"), ('イ', prefix + "'i"), ('ウ', prefix + "'u"), ('エ', prefix + "'e"), ('オ', prefix + "'o"));
             }
 
             {
-                var sokuon = root.Insert(('ッ', ""));
+                var sokuon = root.Add(('ッ', ""));
                 var exceptions = new[]
                 {
                     'ア', 'イ', 'ウ', 'エ', 'オ',
@@ -265,11 +264,12 @@ namespace WanaKanaSharp {
                     'ッ'
                 };
 
-                foreach(var child in root.Where((node) => !exceptions.Contains(node.Key))) {
-                    sokuon.Insert(child.Duplicate(true));
+                foreach(var pair in root.Where((node) => !exceptions.Contains(node.Key))) {
+                    sokuon.Add(pair.Key, pair.Value.Duplicate());
                 }
 
-                sokuon.TraverseChildren((node) => {
+                sokuon.TraverseChildren(pair => {
+                    var node = pair.Value;
                     var value = node.Value;
 
                     if(node.Value.StartsWith("ch", StringComparison.Ordinal)) {
@@ -277,18 +277,17 @@ namespace WanaKanaSharp {
                     } else {
                         node.Value = value[0] + value;
                     }
-                }, -1);
+                });
 
                 {
                     var blacklist = new[] { 'ン', 'ッ' };
 
-                    root.TraverseChildren((node) => {
-                        if(blacklist.Contains(node.Key)) return;
-
+                    root.TraverseChildren(pair => {
+                        if(blacklist.Contains(pair.Key)) return;
+                        var node = pair.Value;
                         var value = node.Value;
-
-                        node.Insert((Key: 'ー', Value: value + value[value.Length - 1]));
-                    });
+                        node.Add(('ー', value + value[value.Length - 1]));
+                    }, 1);
                 }
             }
 
@@ -297,7 +296,7 @@ namespace WanaKanaSharp {
 
         static (string Token, int Position) Convert(Trie<char, string> romajiTree, string input, int position) {
             var current = romajiTree.Root;
-            var next = current.GetChild(input[position]);
+            var next = current.TryGetChild(input[position]);
 
             if(next == null) return (Token: input[position].ToString(), Position: position + 1);
 
@@ -307,7 +306,7 @@ namespace WanaKanaSharp {
 
                 if(position == input.Length) break;
 
-                next = current.GetChild(input[position]);
+                next = current.TryGetChild(input[position]);
             }
 
             return (Token: current.Value, Position: position);

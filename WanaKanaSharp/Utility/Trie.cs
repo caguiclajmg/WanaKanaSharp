@@ -27,6 +27,10 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Net;
 
 namespace WanaKanaSharp.Utility
 {
@@ -34,9 +38,9 @@ namespace WanaKanaSharp.Utility
     {
         public static Trie<TKey, TValue> Empty { get; } = new Trie<TKey, TValue>();
 
-        public class Node : IEnumerable<Node>
+        public class Node : Dictionary<TKey, Node>
         {
-            class Enumerator : IEnumerator<Node>
+            new class Enumerator : IEnumerator<Node>
             {
                 Dictionary<TKey, Node>.Enumerator DictionaryEnumerator;
 
@@ -63,46 +67,75 @@ namespace WanaKanaSharp.Utility
             public Node Parent { get; private set; }
             public TValue Value { get; set; }
 
-            Dictionary<TKey, Node> Children = new Dictionary<TKey, Node>();
+            readonly Dictionary<TKey, Node> Children = new Dictionary<TKey, Node>();
             public bool IsLeaf { get => Children.Count == 0; }
 
-            public Node(TKey key, TValue value)
+            public Node() { Value = default; }
+            public Node(TValue value) { Value = value; }
+
+            public Node Duplicate(bool duplicateChildren = true)
             {
-                Key = key;
-                Parent = null;
-                Value = value;
-            }
+                var node = new Node { Value = Value };
 
-            public Node this[TKey key] => Children[key];
-
-            public bool ContainsKey(TKey key) => Children.ContainsKey(key);
-
-            public Node Duplicate(bool copyChildren = false)
-            {
-                var node = new Node(Key, Value);
-
-                if (copyChildren)
-                {
-                    foreach (var child in this)
-                    {
-                        var c = child.Duplicate(copyChildren);
-                        node.Insert(c);
-                    }
-                }
+                foreach (var pair in this) node.Add(pair.Key, duplicateChildren ? pair.Value.Duplicate(duplicateChildren) : pair.Value);
 
                 return node;
             }
 
-            public Node GetChild(TKey key)
+            public Node Add(TKey key, TValue value)
             {
-                if (Children.TryGetValue(key, out Node node)) return node;
-
-                return null;
+                var node = new Node() { Value = value };
+                Add(key, node);
+                return node;
             }
 
-            public IEnumerator<Node> GetEnumerator()
+            public Node Add((TKey Key, TValue Value) pair) => Add(pair.Key, pair.Value);
+
+            public IEnumerable<Node> Add(params (TKey Key, TValue Value)[] pairs)
             {
-                return new Enumerator(Children.GetEnumerator());
+                var nodes = new List<Node>();
+                foreach (var pair in pairs) nodes.Add(Add(pair));
+                return nodes;
+            }
+
+            public Node Add(IEnumerable<TKey> path, TValue value)
+            {
+                var current = this;
+                foreach (var key in path) current = current.ContainsKey(key) ? current[key] : current.Add(key, default);
+                current.Value = value;
+                return current;
+            }
+
+            public Node Add(IEnumerable<TKey> path, Node node)
+            {
+                var current = this;
+                foreach (var key in path.Take(path.Count() - 1)) current = current.ContainsKey(key) ? current[key] : current.Add(key, default);
+                current.Add(path.Last(), node);
+                return node;
+            }
+
+            public void TraverseChildren(Action<KeyValuePair<TKey, Node>> action, uint? maxDepth = null)
+            {
+                TraverseChildren(action, 0, new List<Node>(), maxDepth);
+            }
+
+            private void TraverseChildren(Action<KeyValuePair<TKey, Node>> action, uint currentDepth, IList<Node> visited, uint? maxDepth)
+            {
+                if (maxDepth.HasValue && currentDepth == maxDepth.Value) return;
+
+                foreach (var pair in this)
+                {
+                    if (visited.Contains(pair.Value)) continue;
+                    visited.Add(pair.Value);
+
+                    action(pair);
+                    pair.Value.TraverseChildren(action, currentDepth + 1, visited, maxDepth);
+                }
+            }
+
+            public Node TryGetChild(TKey key)
+            {
+                return ContainsKey(key) ? this[key] : null;
             }
 
             public Node Insert(Node child)
@@ -118,12 +151,6 @@ namespace WanaKanaSharp.Utility
                 {
                     Insert(child);
                 }
-            }
-
-            public Node Insert((TKey Key, TValue Value) child)
-            {
-                var node = new Node(child.Key, child.Value);
-                return Insert(node);
             }
 
             public void Insert(params (TKey Key, TValue Value)[] children)
@@ -158,7 +185,7 @@ namespace WanaKanaSharp.Utility
                     if (!Children.ContainsKey(key)) throw new KeyNotFoundException();
 
                     var node = Children[key];
-                    node.Key = default(TKey);
+                    node.Key = default;
                     Children.Remove(key);
                 }
             }
@@ -172,7 +199,7 @@ namespace WanaKanaSharp.Utility
             {
                 foreach (var child in this)
                 {
-                    child.Traverse(action, 0, maxDepth);
+                    child.Value.Traverse(action, 0, maxDepth);
                 }
             }
 
@@ -184,13 +211,15 @@ namespace WanaKanaSharp.Utility
 
                 foreach (var child in this)
                 {
-                    child.Traverse(action, currentDepth + 1, maxDepth);
+                    child.Value.Traverse(action, currentDepth + 1, maxDepth);
                 }
             }
 
-            IEnumerator IEnumerable.GetEnumerator()
+            public Node TryGetChild(IEnumerable<TKey> path)
             {
-                return GetEnumerator();
+                var current = this;
+                foreach (var key in path) if (ContainsKey(key)) current = current[key]; else return null;
+                return current;
             }
         }
 
@@ -198,8 +227,6 @@ namespace WanaKanaSharp.Utility
         {
             get { return Root[key]; }
         }
-
-        public Node Root { get; } = new Node(default(TKey), default(TValue));
 
         public void Merge(Trie<TKey, TValue> trie, Func<Node, Node, TValue> valueMerger)
         {
@@ -210,10 +237,12 @@ namespace WanaKanaSharp.Utility
         {
             var trie = new Trie<TKey, TValue>();
             var root = trie.Root;
-            root.Merge(a.Root, (t, u) => u.Value);
-            root.Merge(b.Root, (t, u) => u.Value);
+            root.Merge(a.Root, valueMerger);
+            root.Merge(b.Root, valueMerger);
 
             return trie;
         }
+
+        public Node Root { get; } = new Node();
     }
 }
