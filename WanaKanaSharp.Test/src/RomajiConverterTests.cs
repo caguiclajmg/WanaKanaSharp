@@ -24,16 +24,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-
 using NUnit.Framework;
-
+using WanaKanaSharp.Romaji;
 using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp.Test
 {
     [TestFixture()]
-    public class RomajiConverterTest
+    public class RomajiConverterTests
     {
         [TestCase(null, ExpectedResult = "")]
         [TestCase("", ExpectedResult = "")]
@@ -68,7 +66,11 @@ namespace WanaKanaSharp.Test
         [TestCase("ふフ", ExpectedResult = "fufu")]
         [TestCase("ふとん", ExpectedResult = "futon")]
         [TestCase("フリー", ExpectedResult = "furii")]
-        public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null) => WanaKana.ToRomaji(input, upcaseKatakana, customRomajiMapping);
+        public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
+        {
+            var converter = new HepburnRomajiConverter();
+            return converter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
+        }
 
         [Test]
         public void ConvertWithCustomMapping()
@@ -79,8 +81,9 @@ namespace WanaKanaSharp.Test
                 root.Insert(('い', "i"));
                 root['い'].Insert(('ぬ', "dog"));
 
-                Assert.AreEqual("inu", WanaKana.ToRomaji("いぬ"));
-                Assert.AreEqual("dog", WanaKana.ToRomaji("いぬ", customRomajiMapping: customMapping));
+                var converter = new HepburnRomajiConverter();
+                Assert.AreEqual("inu", converter.ToRomaji("いぬ", false, null));
+                Assert.AreEqual("dog", converter.ToRomaji("いぬ", false, customRomajiMapping: customMapping));
             }
         }
     }

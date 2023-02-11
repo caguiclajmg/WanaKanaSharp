@@ -28,6 +28,9 @@ using System;
 using System.Text.RegularExpressions;
 
 using NUnit.Framework;
+using WanaKanaSharp;
+using WanaKanaSharp.Kana;
+using WanaKanaSharp.Romaji;
 
 namespace WanaKanaSharp.Test
 {
@@ -134,5 +137,27 @@ namespace WanaKanaSharp.Test
         [TestCase("おみまい", true, "お祝い", ExpectedResult = "みまい")]
         [TestCase("おはら", true, "お腹", ExpectedResult = "はら")]
         public string StripOkurigana(string input, bool leading = false, string matchKanji = "") => WanaKana.StripOkurigana(input, leading, matchKanji);
+
+        [Test]
+        public void ReadmeCodeSampleTest()
+        {
+            // Utility functions
+            Assert.IsTrue(WanaKana.IsRomaji("hello"));
+            Assert.IsTrue(WanaKana.IsHiragana("こんにちは"));
+            Assert.IsTrue(WanaKana.IsKatakana("テレビ"));
+            Assert.IsTrue(WanaKana.IsKana("これはキュートです"));
+            Assert.IsTrue(WanaKana.IsKanji("日本語"));
+
+            // Romaji conversion
+            RomajiConverter romajiConverter = new HepburnRomajiConverter();
+            Assert.AreEqual("hiragana", romajiConverter.ToRomaji("ひらがな", false, null));
+            Assert.AreEqual("katakana", romajiConverter.ToRomaji("カタカナ", false, null));
+            Assert.AreEqual("今日 ha PAATEI", romajiConverter.ToRomaji("今日 は パーティ", true, null));
+
+            // Kana conversion
+            KanaConverter kanaConverter = new DefaultKanaConverter();
+            Assert.AreEqual("ひらがな", kanaConverter.ToKana("hiragana", null));
+            Assert.AreEqual("カタカナ", kanaConverter.ToKana("KATAKANA", null));
+        }
     }
 }

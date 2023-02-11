@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Text;
 
 using NUnit.Framework;
-
+using WanaKanaSharp.Romaji;
+using WanaKanaSharp.Kana;
 using WanaKanaSharp.Utility;
 
-namespace WanaKanaSharp.Test {
+namespace WanaKanaSharp.Test
+{
     [TestFixture()]
-    class KanaConverterTest {
+    class KanaConverterTest
+    {
         [TestCase(null, ExpectedResult = "")]
         [TestCase("", ExpectedResult = "")]
         [TestCase("n", ExpectedResult = "ん")]
@@ -27,6 +30,10 @@ namespace WanaKanaSharp.Test {
         [TestCase("kin'you", ExpectedResult = "きんよう")]
         [TestCase("kin'yu", ExpectedResult = "きんゆ")]
         [TestCase("ichiban warui", ExpectedResult = "いちばん わるい")]
-        public string Convert(string input, bool useObsoleteKana = false, Trie<char, string> customKanaMapping = null) => WanaKana.ToKana(input, useObsoleteKana, customKanaMapping);
+        public string Convert(string input, Trie<char, string> customKanaMapping = null)
+        {
+            var converter = new DefaultKanaConverter();
+            return converter.ToKana(input, customKanaMapping);
+        }
     }
 }

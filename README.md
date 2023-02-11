@@ -1,7 +1,7 @@
 <div align="center">
     <h1>ワナカナ &lt;--&gt; WanaKanaSharp &lt;--&gt; わなかな</h1>
-    <h4>A .NET utility library for checking and converting between Hiragana, Katakana and Romaji</h4>
-    <h6>This project is a port of :crocodile: <a href="https://github.com/WaniKani/WanaKana">WanaKana</a> :crab:</h6>
+    <h4>A .NET library for checking and converting between Hiragana, Katakana and Romaji</h4>
+    <h6>This project is a port of :crocodile: <a href="https://github.com/WaniKani/WanaKana">WanaKana</a> :crab: for the .NET platform</h6>
 </div>
 
 ## Status
@@ -38,6 +38,8 @@
     </table>
 </div>
 
+> 🚧 **Warning**: Pre-release versions (<1.0) are experimental, expect API breakage!
+
 ## Usage
 
 Pre-built packages are available from [NuGet](https://www.nuget.org/packages/WanaKanaSharp/)
@@ -55,17 +57,21 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
 ## Examples
 
 ```cs
-    using WanaKanaSharp;
+    // Utility functions
+    Assert.IsTrue(WanaKana.IsRomaji("hello"));
+    Assert.IsTrue(WanaKana.IsHiragana("こんにちは"));
+    Assert.IsTrue(WanaKana.IsKatakana("テレビ"));
+    Assert.IsTrue(WanaKana.IsKana("これはキュートです"));
+    Assert.IsTrue(WanaKana.IsKanji("日本語"));
 
-    WanaKana.IsRomaji("hello"); // true
-    WanaKana.IsHiragana("こんにちは"); // true
-    WanaKana.IsKatakana("テレビ"); // true
-    WanaKana.IsKana("これはキュートです") // true
-    WanaKana.IsKanji("日本語") // true
+    // Romaji conversion
+    RomajiConverter romajiConverter = new HepburnRomajiConverter();
+    Assert.AreEqual("hiragana", romajiConverter.ToRomaji("ひらがな", false, null));
+    Assert.AreEqual("katakana", romajiConverter.ToRomaji("カタカナ", false, null));
+    Assert.AreEqual("今日 ha PAATEI", romajiConverter.ToRomaji("今日 は パーティ", true, null));
 
-    // Hepburn Romanization
-    var hepburnConverter = new HepburnConverter();
-    WanaKana.ToRomaji(hepburnConverter, "ひらがな"); // hiragana
-    WanaKana.ToRomaji(hepburnConverter, "カタカナ"); // katakana
-    WanaKana.ToRomaji(hepburnConverter, "今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
+    // Kana conversion
+    KanaConverter kanaConverter = new DefaultKanaConverter();
+    Assert.AreEqual("ひらがな", kanaConverter.ToKana("hiragana", null));
+    Assert.AreEqual("カタカナ", kanaConverter.ToKana("KATAKANA", null));
 ```
