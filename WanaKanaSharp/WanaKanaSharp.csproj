@@ -21,11 +21,19 @@
 
   <PropertyGroup>
     <Copyright>Copyright © 2020 John Mark Gabriel Caguicla</Copyright>
-    <Description>A .NET utility library for checking and converting between Hiragana, Katakana and Romaji</Description>
+    <Description>A .NET library for checking and converting between Hiragana, Katakana and Romaji</Description>
     <Product>WanaKanaSharp</Product>
     <Language>en-US;ja-JP</Language>
     <AssemblyTitle>WanaKanaSharp</AssemblyTitle>
-    <Version>0.1.1</Version>
+    <Version>0.3.0-alpha</Version>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 </Project>

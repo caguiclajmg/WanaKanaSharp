@@ -78,8 +78,8 @@ namespace WanaKanaSharp.Test
             {
                 var customMapping = new Trie<char, string>();
                 var root = customMapping.Root;
-                root.Insert(('い', "i"));
-                root['い'].Insert(('ぬ', "dog"));
+                root.Add(('い', "i"));
+                root['い'].Add(('ぬ', "dog"));
 
                 var converter = new HepburnRomajiConverter();
                 Assert.AreEqual("inu", converter.ToRomaji("いぬ", false, null));

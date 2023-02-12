@@ -61,6 +61,7 @@ namespace WanaKanaSharp.Romaji
                         ('　', " "));
 
             HepburnTree.Merge(kanaTree);
+            Console.WriteLine(HepburnTree);
         }
 
         public override string ToRomaji(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping)
@@ -158,7 +159,7 @@ namespace WanaKanaSharp.Romaji
             }
 
             {
-                var sokuon = root.Add(('っ', ""));
+                var sokuon = root.Add('っ', "");
                 var exceptions = new[]
                 {
                     'あ', 'い', 'う', 'え', 'お',
@@ -169,13 +170,15 @@ namespace WanaKanaSharp.Romaji
                     'っ'
                 };
 
-                foreach (var pair in root.Where(node => !exceptions.Contains(node.Key)))
+                root.Traverse((path, key, node) =>
                 {
-                    sokuon.Add(pair.Key, pair.Value.Duplicate());
-                }
+                    if (exceptions.Contains(key)) return;
+                    sokuon.Add(key, node.Duplicate());
+                }, 0);
 
-                sokuon.TraverseChildren((path, key, node)=>
+                sokuon.Traverse((path, key, node) =>
                 {
+                    Console.WriteLine($"attaching to {key} at path {String.Join("", path)}");
                     var value = node.Value;
 
                     if (node.Value.StartsWith("ch", StringComparison.Ordinal))
@@ -197,24 +200,26 @@ namespace WanaKanaSharp.Romaji
             var trie = new Trie<char, string>();
             var root = trie.Root;
 
-            root.Add(('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
-                        ('カ', "ka"), ('キ', "ki"), ('ク', "ku"), ('ケ', "ke"), ('コ', "ko"),
-                        ('サ', "sa"), ('シ', "shi"), ('ス', "su"), ('セ', "se"), ('ソ', "so"),
-                        ('タ', "ta"), ('チ', "chi"), ('ツ', "tsu"), ('テ', "te"), ('ト', "to"),
-                        ('ナ', "na"), ('ニ', "ni"), ('ヌ', "nu"), ('ネ', "ne"), ('ノ', "no"),
-                        ('ハ', "ha"), ('ヒ', "hi"), ('フ', "fu"), ('ヘ', "he"), ('ホ', "ho"),
-                        ('マ', "ma"), ('ミ', "mi"), ('ム', "mu"), ('メ', "me"), ('モ', "mo"),
-                        ('ヤ', "ya"), ('ユ', "yu"), ('ヨ', "yo"),
-                        ('ラ', "ra"), ('リ', "ri"), ('ル', "ru"), ('レ', "re"), ('ロ', "ro"),
-                        ('ワ', "wa"), ('ヲ', "wo"),
-                        ('ン', "n"),
-                        ('ガ', "ga"), ('ギ', "gi"), ('グ', "gu"), ('ゲ', "ge"), ('ゴ', "go"),
-                        ('ザ', "za"), ('ジ', "ji"), ('ズ', "zu"), ('ゼ', "ze"), ('ゾ', "zo"),
-                        ('ダ', "da"), ('ヂ', "ji"), ('ヅ', "zu"), ('デ', "de"), ('ド', "do"),
-                        ('バ', "ba"), ('ビ', "bi"), ('ブ', "bu"), ('ベ', "be"), ('ボ', "bo"),
-                        ('パ', "pa"), ('ピ', "pi"), ('プ', "pu"), ('ペ', "pe"), ('ポ', "po"),
-                        ('ァ', "a"), ('ィ', "i"), ('ゥ', "u"), ('ェ', "e"), ('ォ', "o"),
-                        ('ャ', "ya"), ('ュ', "yu"), ('ョ', "yo"));
+            root.Add(
+                ('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
+                ('カ', "ka"), ('キ', "ki"), ('ク', "ku"), ('ケ', "ke"), ('コ', "ko"),
+                ('サ', "sa"), ('シ', "shi"), ('ス', "su"), ('セ', "se"), ('ソ', "so"),
+                ('タ', "ta"), ('チ', "chi"), ('ツ', "tsu"), ('テ', "te"), ('ト', "to"),
+                ('ナ', "na"), ('ニ', "ni"), ('ヌ', "nu"), ('ネ', "ne"), ('ノ', "no"),
+                ('ハ', "ha"), ('ヒ', "hi"), ('フ', "fu"), ('ヘ', "he"), ('ホ', "ho"),
+                ('マ', "ma"), ('ミ', "mi"), ('ム', "mu"), ('メ', "me"), ('モ', "mo"),
+                ('ヤ', "ya"), ('ユ', "yu"), ('ヨ', "yo"),
+                ('ラ', "ra"), ('リ', "ri"), ('ル', "ru"), ('レ', "re"), ('ロ', "ro"),
+                ('ワ', "wa"), ('ヲ', "wo"),
+                ('ン', "n"),
+                ('ガ', "ga"), ('ギ', "gi"), ('グ', "gu"), ('ゲ', "ge"), ('ゴ', "go"),
+                ('ザ', "za"), ('ジ', "ji"), ('ズ', "zu"), ('ゼ', "ze"), ('ゾ', "zo"),
+                ('ダ', "da"), ('ヂ', "ji"), ('ヅ', "zu"), ('デ', "de"), ('ド', "do"),
+                ('バ', "ba"), ('ビ', "bi"), ('ブ', "bu"), ('ベ', "be"), ('ボ', "bo"),
+                ('パ', "pa"), ('ピ', "pi"), ('プ', "pu"), ('ペ', "pe"), ('ポ', "po"),
+                ('ァ', "a"), ('ィ', "i"), ('ゥ', "u"), ('ェ', "e"), ('ォ', "o"),
+                ('ャ', "ya"), ('ュ', "yu"), ('ョ', "yo")
+            );
 
             {
                 var whitelist = new[] { 'キ', 'ニ', 'ヒ', 'ミ', 'リ', 'ギ', 'ビ', 'ピ' };
@@ -267,7 +272,7 @@ namespace WanaKanaSharp.Romaji
             }
 
             {
-                var sokuon = root.Add(('ッ', ""));
+                var sokuon = root.Add('ッ', "");
                 var exceptions = new[]
                 {
                     'ア', 'イ', 'ウ', 'エ', 'オ',
@@ -278,13 +283,15 @@ namespace WanaKanaSharp.Romaji
                     'ッ'
                 };
 
-                foreach (var pair in root.Where((node) => !exceptions.Contains(node.Key)))
+                root.Traverse((path, key, node) =>
                 {
-                    sokuon.Add(pair.Key, pair.Value.Duplicate());
-                }
+                    if (exceptions.Contains(key)) return;
+                    sokuon.Add(key, node.Duplicate());
+                }, 0);
 
-                sokuon.TraverseChildren((path, key, node) =>
+                sokuon.Traverse((path, key, node) =>
                 {
+                    Console.WriteLine($"attaching to {key} at path {String.Join("", path)}");
                     var value = node.Value;
 
                     if (node.Value.StartsWith("ch", StringComparison.Ordinal))
@@ -306,7 +313,7 @@ namespace WanaKanaSharp.Romaji
                     if (exceptions.Contains(key)) return;
                     var value = node.Value;
                     node.Add(('ー', value + value[value.Length - 1]));
-                }, 1);
+                }, 0);
             }
 
             return trie;
