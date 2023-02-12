@@ -1,10 +1,10 @@
 ﻿//
-// KanaConverter.cs
+// RomajiConverter.cs
 //
 // Author:
-//       John Mark Gabriel Caguicla <jmg.caguicla@yozuru.jp>
+//       John Mark Gabriel Caguicla <jmg.caguicla@guarandoo.me>
 //
-// Copyright (c) 2019 John Mark Gabriel Caguicla
+// Copyright (c) 2023 John Mark Gabriel Caguicla
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,16 +24,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
-
 using WanaKanaSharp.Utility;
 
-namespace WanaKanaSharp
+namespace WanaKanaSharp.Romaji
 {
-    public class KanaConverter
+    public abstract class RomajiConverter
     {
-        public static string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping) {
-            throw new NotImplementedException();
-        }
+        public abstract string ToRomaji(string input, bool upcaseKatakana, Trie<char, string> customRomajiMapping);
     }
 }

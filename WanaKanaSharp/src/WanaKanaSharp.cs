@@ -28,7 +28,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using WanaKanaSharp.Romaji;
 using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp
@@ -82,7 +82,7 @@ namespace WanaKanaSharp
         /// <param name="input">The character to test.</param>
         public static bool IsHiragana(char input)
         {
-            return (input == CharacterConstants.ProlongedSoundMark) || IsCharInRange(input, CharacterConstants.HiraganaStart, CharacterConstants.HiraganaEnd);
+            return input == CharacterConstants.ProlongedSoundMark || IsCharInRange(input, CharacterConstants.HiraganaStart, CharacterConstants.HiraganaEnd);
         }
 
         /// <summary>
@@ -202,33 +202,6 @@ namespace WanaKanaSharp
             return IsCharInRange(input, CharacterConstants.JapanesePunctuationRanges);
         }
 
-        /// <summary>
-        /// Converts
-        /// </summary>
-        /// <returns>The Romaji equivalent of the input string.</returns>
-        /// <param name="input">The string to convert.</param>
-        /// <param name="upcaseKatakana">If set to <c>true</c>, Katakana characters are converted into uppercase Romaji characters.</param>
-        /// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
-        public static string ToRomaji(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
-        {
-            return RomajiConverter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
-        }
-
-        public static string ToHiragana(string input, bool passRomaji = false, bool useObsoleteKana = false)
-        {
-            throw new NotImplementedException("WanaKana.ToHiragana(string, bool, bool) not yet implemented!");
-        }
-
-        public static string ToKatakana(string input, bool passRomaji = false, bool useObsoleteKana = false)
-        {
-            throw new NotImplementedException("WanaKana.ToKatakana(string, bool, bool) not yet implemented!");
-        }
-
-        public static string ToKana(string input, bool useObsoleteKana = false, Trie<char, string> customKanaMapping = null)
-        {
-            return KanaConverter.ToKana(input, useObsoleteKana, customKanaMapping);
-        }
-
         public static string[] Tokenize(string input, bool compact = false, bool detailed = false)
         {
             if (string.IsNullOrEmpty(input)) return null;
@@ -263,15 +236,15 @@ namespace WanaKanaSharp
         public static string StripOkurigana(string input, bool leading = false, string matchKanji = "")
         {
             if (!IsJapanese(input) ||
-                (leading && !IsKana(input[0])) ||
-                (!leading && !IsKana(input[input.Length - 1])) ||
-                ((!string.IsNullOrEmpty(matchKanji) && !HasKanji(matchKanji)) || (string.IsNullOrEmpty(matchKanji) && IsKana(input))))
+                leading && !IsKana(input[0]) ||
+                !leading && !IsKana(input[input.Length - 1]) ||
+                !string.IsNullOrEmpty(matchKanji) && !HasKanji(matchKanji) || string.IsNullOrEmpty(matchKanji) && IsKana(input))
             {
                 return input;
             }
 
             string[] tokens = Tokenize(string.IsNullOrEmpty(matchKanji) ? input : matchKanji);
-            Regex regex = new Regex(leading ? ('^' + tokens[0]) : (tokens[tokens.Length - 1] + '$'));
+            Regex regex = new Regex(leading ? '^' + tokens[0] : tokens[tokens.Length - 1] + '$');
             input = regex.Replace(input, "");
 
             return input;
@@ -331,7 +304,7 @@ namespace WanaKanaSharp
 
         static bool IsCharInRange(char input, char start, char end)
         {
-            return (input >= start) && (input <= end);
+            return input >= start && input <= end;
         }
 
         static bool IsCharInRange(char input, (char Start, char End) range)
@@ -346,7 +319,7 @@ namespace WanaKanaSharp
 
         static bool IsMatch(char input, Regex allowed)
         {
-            return (allowed != null) && (allowed.IsMatch(input.ToString()));
+            return allowed != null && allowed.IsMatch(input.ToString());
         }
     }
 }

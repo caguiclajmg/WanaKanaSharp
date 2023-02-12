@@ -1,7 +1,7 @@
 <div align="center">
     <h1>ワナカナ &lt;--&gt; WanaKanaSharp &lt;--&gt; わなかな</h1>
-    <h4>A .NET utility library for checking and converting between Hiragana, Katakana and Romaji</h4>
-    <h6>This project is a port of :crocodile: <a href="https://github.com/WaniKani/WanaKana">WanaKana</a> :crab:</h6>
+    <h4>A .NET library for checking and converting between Hiragana, Katakana and Romaji</h4>
+    <h6>This project is a port of :crocodile: <a href="https://github.com/WaniKani/WanaKana">WanaKana</a> :crab: for the .NET platform</h6>
 </div>
 
 ## Status
@@ -38,6 +38,8 @@
     </table>
 </div>
 
+> **Warning** Pre-release versions (<1.0) are experimental, expect API breakage!
+
 ## Usage
 
 Pre-built packages are available from [NuGet](https://www.nuget.org/packages/WanaKanaSharp/)
@@ -55,17 +57,20 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
 ## Examples
 
 ```cs
-    using WanaKanaSharp;
-
+    // Utility functions
     WanaKana.IsRomaji("hello"); // true
     WanaKana.IsHiragana("こんにちは"); // true
     WanaKana.IsKatakana("テレビ"); // true
-    WanaKana.IsKana("これはキュートです") // true
-    WanaKana.IsKanji("日本語") // true
+    WanaKana.IsKana("これはキュートです"); // true
+    WanaKana.IsKanji("日本語"); // true
 
-    // Hepburn Romanization
-    var hepburnConverter = new HepburnConverter();
-    WanaKana.ToRomaji(hepburnConverter, "ひらがな"); // hiragana
-    WanaKana.ToRomaji(hepburnConverter, "カタカナ"); // katakana
-    WanaKana.ToRomaji(hepburnConverter, "今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
+    // Romaji conversion
+    RomajiConverter romajiConverter = new HepburnRomajiConverter();
+    romajiConverter.ToRomaji("ひらがな", false, null); // hiragana
+    romajiConverter.ToRomaji("カタカナ", false, null); // katakana
+
+    // Kana conversion
+    KanaConverter kanaConverter = new DefaultKanaConverter();
+    kanaConverter.ToKana("hiragana", null); // ひらがな
+    kanaConverter.ToKana("KATAKANA", null); // カタカナ
 ```
