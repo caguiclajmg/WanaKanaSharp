@@ -66,14 +66,14 @@ namespace WanaKanaSharp
         public static readonly (char Start, char End) CommonCJK = ('\u4E00', '\u9FFF');
         public static readonly (char Start, char End) RareCJK = ('\u3400', '\u4DBF');
 
-        public static readonly (char Start, char End)[] KanaRanges = {
+        public static readonly (char Start, char End)[] KanaRanges = [
             HiraganaCharacters,
             KatakanaCharacters,
             KanaPunctuation,
             HankakuKatakana
-        };
+        ];
 
-        public static readonly (char Start, char End)[] JapanesePunctuationRanges = {
+        public static readonly (char Start, char End)[] JapanesePunctuationRanges = [
             CJKSymbolsPunctuation,
             KanaPunctuation,
             KatakanaPunctuation,
@@ -82,24 +82,24 @@ namespace WanaKanaSharp
             ZenkakuPunctuation3,
             ZenkakuPunctuation4,
             ZenkakuSymbolsCurrency
-        };
+        ];
 
         public static readonly (char Start, char End)[] JapaneseRanges;
 
         public static readonly (char Start, char End) ModernEnglish = ('\u0000', '\u007F');
 
-        public static readonly (char Start, char End)[] HepburnMacronRanges = {
+        public static readonly (char Start, char End)[] HepburnMacronRanges = [
             ('\u0100', '\u0101'),
             ('\u0112', '\u0113'),
             ('\u012A', '\u012B'),
             ('\u014C', '\u014D'),
             ('\u016A', '\u016B')
-        };
+        ];
 
-        public static readonly (char Start, char End)[] SmartQuoteRanges = {
+        public static readonly (char Start, char End)[] SmartQuoteRanges = [
             ('\u2018', '\u2019'),
             ('\u201C', '\u201D')
-        };
+        ];
 
         public static readonly (char Start, char End)[] RomajiRanges;
 
@@ -107,30 +107,30 @@ namespace WanaKanaSharp
 
         static CharacterConstants()
         {
-            JapaneseRanges = new[] {
+            JapaneseRanges = [
                 ZenkakuUppercase,
                 ZenkakuLowercase,
                 ZenkakuNumbers,
                 CommonCJK,
                 RareCJK
-            };
-            JapaneseRanges = JapaneseRanges.Concat(KanaRanges).ToArray();
-            JapaneseRanges = JapaneseRanges.Concat(JapanesePunctuationRanges).ToArray();
+            ];
+            JapaneseRanges = [.. JapaneseRanges, .. KanaRanges];
+            JapaneseRanges = [.. JapaneseRanges, .. JapanesePunctuationRanges];
 
-            RomajiRanges = new[]
-            {
+            RomajiRanges =
+            [
                 ModernEnglish
-            };
-            RomajiRanges = RomajiRanges.Concat(HepburnMacronRanges).ToArray();
+            ];
+            RomajiRanges = [.. RomajiRanges, .. HepburnMacronRanges];
 
-            EnglishPunctuationRanges = new[]
-            {
+            EnglishPunctuationRanges =
+            [
                 ('\u0020', '\u002F'),
                 ('\u003A', '\u003F'),
                 ('\u005B', '\u0060'),
                 ('\u007B', '\u007E')
-            };
-            EnglishPunctuationRanges = EnglishPunctuationRanges.Concat(SmartQuoteRanges).ToArray();
+            ];
+            EnglishPunctuationRanges = [.. EnglishPunctuationRanges, .. SmartQuoteRanges];
         }
     }
 }

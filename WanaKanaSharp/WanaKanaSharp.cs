@@ -247,10 +247,10 @@ namespace WanaKanaSharp
                     if (!(position < input.Length)) break;
                 } while (GetTokenType(input[position]) == type);
 
-                tokens.Add(input.Substring(start, position - start));
+                tokens.Add(input[start..position]);
             } while (position < input.Length);
 
-            return tokens.ToArray();
+            return [.. tokens];
         }
 
         /// <summary>
@@ -264,14 +264,14 @@ namespace WanaKanaSharp
         {
             if (!IsJapanese(input) ||
                 (leading && !IsKana(input[0])) ||
-                (!leading && !IsKana(input[input.Length - 1])) ||
+                (!leading && !IsKana(input[^1])) ||
                 ((!string.IsNullOrEmpty(matchKanji) && !HasKanji(matchKanji)) || (string.IsNullOrEmpty(matchKanji) && IsKana(input))))
             {
                 return input;
             }
 
             string[] tokens = Tokenize(string.IsNullOrEmpty(matchKanji) ? input : matchKanji);
-            Regex regex = new Regex(leading ? ('^' + tokens[0]) : (tokens[tokens.Length - 1] + '$'));
+            var regex = new Regex(leading ? ('^' + tokens[0]) : (tokens[^1] + '$'));
             input = regex.Replace(input, "");
 
             return input;

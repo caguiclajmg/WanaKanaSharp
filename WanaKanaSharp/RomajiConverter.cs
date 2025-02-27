@@ -33,7 +33,7 @@ using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp {
     public class RomajiConverter {
-        static Trie<char, string> HepburnTree = new Trie<char, string>();
+        static readonly Trie<char, string> HepburnTree = new();
 
         static RomajiConverter() {
             var hiraganaTree = BuildHiraganaTree();
@@ -74,10 +74,10 @@ namespace WanaKanaSharp {
 
             int position = 0;
             do {
-                var pair = Convert(romajiTree, input, position);
-                var uppercase = upcaseKatakana && WanaKana.IsKatakana(input.Substring(position, pair.Position - position));
-                builder.Append(uppercase ? pair.Token.ToUpper() : pair.Token);
-                position = pair.Position;
+                var (Token, Position) = Convert(romajiTree, input, position);
+                var uppercase = upcaseKatakana && WanaKana.IsKatakana(input[position..Position]);
+                builder.Append(uppercase ? Token.ToUpper() : Token);
+                position = Position;
             } while(position < input.Length);
 
             return builder.ToString();
@@ -287,7 +287,7 @@ namespace WanaKanaSharp {
 
                         var value = node.Value;
 
-                        node.Insert((Key: 'ー', Value: value + value[value.Length - 1]));
+                        node.Insert((Key: 'ー', Value: value + value[^1]));
                     });
                 }
             }

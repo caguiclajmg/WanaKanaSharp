@@ -34,20 +34,15 @@ namespace WanaKanaSharp.Utility
     {
         public static Trie<TKey, TValue> Empty { get; } = new Trie<TKey, TValue>();
 
-        public class Node : IEnumerable<Node>
+        public class Node(TKey key, TValue value) : IEnumerable<Node>
         {
-            class Enumerator : IEnumerator<Node>
+            class Enumerator(Dictionary<TKey, Node>.Enumerator enumerator) : IEnumerator<Node>
             {
-                Dictionary<TKey, Node>.Enumerator DictionaryEnumerator;
+                Dictionary<TKey, Node>.Enumerator DictionaryEnumerator = enumerator;
 
-                public Node Current => DictionaryEnumerator.Current.Value;
+                public Node Current { get => DictionaryEnumerator.Current.Value; }
 
                 object IEnumerator.Current => Current;
-
-                public Enumerator(Dictionary<TKey, Node>.Enumerator enumerator)
-                {
-                    DictionaryEnumerator = enumerator;
-                }
 
                 public void Dispose()
                 {
@@ -59,19 +54,12 @@ namespace WanaKanaSharp.Utility
                 public void Reset() => throw new NotImplementedException();
             }
 
-            public TKey Key { get; private set; }
-            public Node Parent { get; private set; }
-            public TValue Value { get; set; }
+            public TKey Key { get; private set; } = key;
+            public Node Parent { get; private set; } = null;
+            public TValue Value { get; set; } = value;
 
-            Dictionary<TKey, Node> Children = new Dictionary<TKey, Node>();
+            readonly Dictionary<TKey, Node> Children = [];
             public bool IsLeaf { get => Children.Count == 0; }
-
-            public Node(TKey key, TValue value)
-            {
-                Key = key;
-                Parent = null;
-                Value = value;
-            }
 
             public Node this[TKey key] => Children[key];
 
@@ -138,15 +126,15 @@ namespace WanaKanaSharp.Utility
             {
                 Value = valueMerger(this, other);
 
-                foreach (var child in other.Children)
+                foreach (var otherChild in other.Children)
                 {
-                    if (Children.ContainsKey(child.Key))
+                    if (Children.TryGetValue(otherChild.Key, out var child))
                     {
-                        Children[child.Key].Merge(child.Value, valueMerger);
+                        child.Merge(otherChild.Value, valueMerger);
                     }
                     else
                     {
-                        Insert(child.Value.Duplicate(true));
+                        Insert(otherChild.Value.Duplicate(true));
                     }
                 }
             }
@@ -155,10 +143,10 @@ namespace WanaKanaSharp.Utility
             {
                 foreach (var key in keys)
                 {
-                    if (!Children.ContainsKey(key)) throw new KeyNotFoundException();
+                    if (!Children.TryGetValue(key, out var child)) throw new KeyNotFoundException();
 
                     var node = Children[key];
-                    node.Key = default(TKey);
+                    node.Key = default;
                     Children.Remove(key);
                 }
             }
@@ -199,7 +187,7 @@ namespace WanaKanaSharp.Utility
             get { return Root[key]; }
         }
 
-        public Node Root { get; } = new Node(default(TKey), default(TValue));
+        public Node Root { get; } = new Node(default, default);
 
         public void Merge(Trie<TKey, TValue> trie, Func<Node, Node, TValue> valueMerger)
         {
