@@ -4,6 +4,10 @@
     <h6>This project is a port of :crocodile: <a href="https://github.com/WaniKani/WanaKana">WanaKana</a> :crab:</h6>
 </div>
 
+## 🚧 Notice
+
+This project started out as a direct port of [WanaKana](https://wanakana.com/) but is now headed towards deviation from the original as certain features are being added (e.g., supporting multiple romanization methods).
+
 ## Status
 
 <div align="center">
