@@ -38,15 +38,28 @@ public class Trie<TKey, TValue>
     {
         class Enumerator(Dictionary<TKey, Node>.Enumerator enumerator) : IEnumerator<Node>
         {
+            private bool _disposed;
+
             Dictionary<TKey, Node>.Enumerator DictionaryEnumerator = enumerator;
 
             public Node Current { get => DictionaryEnumerator.Current.Value; }
 
             object IEnumerator.Current => Current;
 
+            protected void Dispose(bool disposing)
+            {
+                if (_disposed) return;
+                if (disposing)
+                {
+                    DictionaryEnumerator.Dispose();
+                }
+                _disposed = true;
+            }
+
             public void Dispose()
             {
-                DictionaryEnumerator.Dispose();
+                Dispose(disposing: true);
+                GC.SuppressFinalize(this);
             }
 
             public bool MoveNext() => DictionaryEnumerator.MoveNext();
