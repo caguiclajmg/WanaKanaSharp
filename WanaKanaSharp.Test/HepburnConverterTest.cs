@@ -65,7 +65,11 @@ public class HepburnConverterTest
     [TestCase("ふフ", ExpectedResult = "fufu")]
     [TestCase("ふとん", ExpectedResult = "futon")]
     [TestCase("フリー", ExpectedResult = "furii")]
-    public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null) => WanaKana.ToRomaji(input, upcaseKatakana, customRomajiMapping);
+    public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
+    {
+        var converter = new HepburnRomajiConverter();
+        return converter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
+    }
 
     [Test]
     public void ConvertWithCustomMapping()
@@ -76,8 +80,9 @@ public class HepburnConverterTest
             root.Insert(('い', "i"));
             root['い'].Insert(('ぬ', "dog"));
 
-            Assert.AreEqual("inu", WanaKana.ToRomaji("いぬ"));
-            Assert.AreEqual("dog", WanaKana.ToRomaji("いぬ", customRomajiMapping: customMapping));
+            var converter = new HepburnRomajiConverter();
+            Assert.AreEqual("inu", converter.ToRomaji("いぬ"));
+            Assert.AreEqual("dog", converter.ToRomaji("いぬ", customRomajiMapping: customMapping));
         }
     }
 }

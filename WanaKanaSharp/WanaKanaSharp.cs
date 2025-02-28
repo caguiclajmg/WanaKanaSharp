@@ -28,7 +28,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp;
 
@@ -199,33 +198,6 @@ public static class WanaKana
     public static bool IsJapanesePunctuation(char input)
     {
         return IsCharInRange(input, CharacterConstants.JapanesePunctuationRanges);
-    }
-
-    /// <summary>
-    /// Converts
-    /// </summary>
-    /// <returns>The Romaji equivalent of the input string.</returns>
-    /// <param name="input">The string to convert.</param>
-    /// <param name="upcaseKatakana">If set to <c>true</c>, Katakana characters are converted into uppercase Romaji characters.</param>
-    /// <param name="customRomajiMapping">Custom Romaji mapping rules.</param>
-    public static string ToRomaji(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
-    {
-        return RomajiConverter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
-    }
-
-    public static string ToHiragana(string input, bool passRomaji = false, bool useObsoleteKana = false)
-    {
-        throw new NotImplementedException("WanaKana.ToHiragana(string, bool, bool) not yet implemented!");
-    }
-
-    public static string ToKatakana(string input, bool passRomaji = false, bool useObsoleteKana = false)
-    {
-        throw new NotImplementedException("WanaKana.ToKatakana(string, bool, bool) not yet implemented!");
-    }
-
-    public static string ToKana(string input, bool useObsoleteKana = false, Trie<char, string> customKanaMapping = null)
-    {
-        return KanaConverter.ToKana(input, useObsoleteKana, customKanaMapping);
     }
 
     public static string[] Tokenize(string input, bool compact = false, bool detailed = false)
