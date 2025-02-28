@@ -202,17 +202,16 @@ public class Trie<TKey, TValue> where TKey : notnull
 
     public Node Root { get; } = new Node(default!, default!);
 
-    public void Merge(Trie<TKey, TValue> trie, Func<Node, Node, TValue> valueMerger)
-    {
-        Root.Merge(trie.Root, valueMerger);
-    }
-
-    public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b, Func<Node, Node, TValue> valueMerger)
+    public static Trie<TKey, TValue> Merge(
+        Trie<TKey, TValue> a,
+        Trie<TKey, TValue> b,
+        Func<Node, Node, TValue> valueMerger
+    )
     {
         var trie = new Trie<TKey, TValue>();
         var root = trie.Root;
-        root.Merge(a.Root, (t, u) => u.Value);
-        root.Merge(b.Root, (t, u) => u.Value);
+        root.Merge(a.Root, valueMerger);
+        root.Merge(b.Root, valueMerger);
 
         return trie;
     }
