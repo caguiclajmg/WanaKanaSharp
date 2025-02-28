@@ -26,14 +26,13 @@
 
 using System;
 using System.Linq;
-using System.Text;
 using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp;
 
 public class HepburnRomajiConverter : RomajiConverter
 {
-    static readonly Trie<char, string> HepburnTree = new();
+    static readonly Trie<char, string> RomajiTree = new();
 
     static Trie<char, string> BuildHiraganaTree()
     {
@@ -266,15 +265,13 @@ public class HepburnRomajiConverter : RomajiConverter
         return trie;
     }
 
-    protected override Trie<char, string> GetTrie() => HepburnTree;
-
     static HepburnRomajiConverter()
     {
         var hiraganaTree = BuildHiraganaTree();
         var katakanaTree = BuildKatakanaTree();
         var kanaTree = Trie<char, string>.Merge(hiraganaTree, katakanaTree, (a, b) => b.Value);
 
-        var root = HepburnTree.Root;
+        var root = RomajiTree.Root;
 
         root.Insert(('。', "."),
                     ('、', ","),
@@ -296,6 +293,9 @@ public class HepburnRomajiConverter : RomajiConverter
                     ('｝', "}"),
                     ('　', " "));
 
-        HepburnTree.Merge(kanaTree, (a, b) => b.Value);
+        RomajiTree.Merge(kanaTree, (a, b) => b.Value);
     }
+
+    protected override Trie<char, string> GetTrie() => RomajiTree;
+
 }
