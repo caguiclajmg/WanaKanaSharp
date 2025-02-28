@@ -28,180 +28,179 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace WanaKanaSharp.Utility
+namespace WanaKanaSharp.Utility;
+
+public class Trie<TKey, TValue>
 {
-    public class Trie<TKey, TValue>
+    public static Trie<TKey, TValue> Empty { get; } = new Trie<TKey, TValue>();
+
+    public class Node(TKey key, TValue value) : IEnumerable<Node>
     {
-        public static Trie<TKey, TValue> Empty { get; } = new Trie<TKey, TValue>();
-
-        public class Node(TKey key, TValue value) : IEnumerable<Node>
+        class Enumerator(Dictionary<TKey, Node>.Enumerator enumerator) : IEnumerator<Node>
         {
-            class Enumerator(Dictionary<TKey, Node>.Enumerator enumerator) : IEnumerator<Node>
+            Dictionary<TKey, Node>.Enumerator DictionaryEnumerator = enumerator;
+
+            public Node Current { get => DictionaryEnumerator.Current.Value; }
+
+            object IEnumerator.Current => Current;
+
+            public void Dispose()
             {
-                Dictionary<TKey, Node>.Enumerator DictionaryEnumerator = enumerator;
-
-                public Node Current { get => DictionaryEnumerator.Current.Value; }
-
-                object IEnumerator.Current => Current;
-
-                public void Dispose()
-                {
-                    DictionaryEnumerator.Dispose();
-                }
-
-                public bool MoveNext() => DictionaryEnumerator.MoveNext();
-
-                public void Reset() => throw new NotImplementedException();
+                DictionaryEnumerator.Dispose();
             }
 
-            public TKey Key { get; private set; } = key;
-            public Node Parent { get; private set; } = null;
-            public TValue Value { get; set; } = value;
+            public bool MoveNext() => DictionaryEnumerator.MoveNext();
 
-            readonly Dictionary<TKey, Node> Children = [];
-            public bool IsLeaf { get => Children.Count == 0; }
+            public void Reset() => throw new NotImplementedException();
+        }
 
-            public Node this[TKey key] => Children[key];
+        public TKey Key { get; private set; } = key;
+        public Node Parent { get; private set; } = null;
+        public TValue Value { get; set; } = value;
 
-            public bool ContainsKey(TKey key) => Children.ContainsKey(key);
+        readonly Dictionary<TKey, Node> Children = [];
+        public bool IsLeaf { get => Children.Count == 0; }
 
-            public Node Duplicate(bool copyChildren = false)
-            {
-                var node = new Node(Key, Value);
+        public Node this[TKey key] => Children[key];
 
-                if (copyChildren)
-                {
-                    foreach (var child in this)
-                    {
-                        var c = child.Duplicate(copyChildren);
-                        node.Insert(c);
-                    }
-                }
+        public bool ContainsKey(TKey key) => Children.ContainsKey(key);
 
-                return node;
-            }
+        public Node Duplicate(bool copyChildren = false)
+        {
+            var node = new Node(Key, Value);
 
-            public Node GetChild(TKey key)
-            {
-                if (Children.TryGetValue(key, out Node node)) return node;
-
-                return null;
-            }
-
-            public IEnumerator<Node> GetEnumerator()
-            {
-                return new Enumerator(Children.GetEnumerator());
-            }
-
-            public Node Insert(Node child)
-            {
-                child.Parent = this;
-                Children.Add(child.Key, child);
-                return child;
-            }
-
-            public void Insert(params Node[] children)
-            {
-                foreach (var child in children)
-                {
-                    Insert(child);
-                }
-            }
-
-            public Node Insert((TKey Key, TValue Value) child)
-            {
-                var node = new Node(child.Key, child.Value);
-                return Insert(node);
-            }
-
-            public void Insert(params (TKey Key, TValue Value)[] children)
-            {
-                foreach (var child in children)
-                {
-                    Insert(child);
-                }
-            }
-
-            public void Merge(Node other, Func<Node, Node, TValue> valueMerger)
-            {
-                Value = valueMerger(this, other);
-
-                foreach (var otherChild in other.Children)
-                {
-                    if (Children.TryGetValue(otherChild.Key, out var child))
-                    {
-                        child.Merge(otherChild.Value, valueMerger);
-                    }
-                    else
-                    {
-                        Insert(otherChild.Value.Duplicate(true));
-                    }
-                }
-            }
-
-            public void Remove(params TKey[] keys)
-            {
-                foreach (var key in keys)
-                {
-                    if (!Children.TryGetValue(key, out var child)) throw new KeyNotFoundException();
-
-                    var node = Children[key];
-                    node.Key = default;
-                    Children.Remove(key);
-                }
-            }
-
-            public void Traverse(Action<Node> action, int maxDepth = -1)
-            {
-                Traverse(action, 0, maxDepth);
-            }
-
-            public void TraverseChildren(Action<Node> action, int maxDepth = 0)
+            if (copyChildren)
             {
                 foreach (var child in this)
                 {
-                    child.Traverse(action, 0, maxDepth);
+                    var c = child.Duplicate(copyChildren);
+                    node.Insert(c);
                 }
             }
 
-            void Traverse(Action<Node> action, int currentDepth, int maxDepth)
+            return node;
+        }
+
+        public Node GetChild(TKey key)
+        {
+            if (Children.TryGetValue(key, out Node node)) return node;
+
+            return null;
+        }
+
+        public IEnumerator<Node> GetEnumerator()
+        {
+            return new Enumerator(Children.GetEnumerator());
+        }
+
+        public Node Insert(Node child)
+        {
+            child.Parent = this;
+            Children.Add(child.Key, child);
+            return child;
+        }
+
+        public void Insert(params Node[] children)
+        {
+            foreach (var child in children)
             {
-                action(this);
+                Insert(child);
+            }
+        }
 
-                if (currentDepth == maxDepth) return;
+        public Node Insert((TKey Key, TValue Value) child)
+        {
+            var node = new Node(child.Key, child.Value);
+            return Insert(node);
+        }
 
-                foreach (var child in this)
+        public void Insert(params (TKey Key, TValue Value)[] children)
+        {
+            foreach (var child in children)
+            {
+                Insert(child);
+            }
+        }
+
+        public void Merge(Node other, Func<Node, Node, TValue> valueMerger)
+        {
+            Value = valueMerger(this, other);
+
+            foreach (var otherChild in other.Children)
+            {
+                if (Children.TryGetValue(otherChild.Key, out var child))
                 {
-                    child.Traverse(action, currentDepth + 1, maxDepth);
+                    child.Merge(otherChild.Value, valueMerger);
+                }
+                else
+                {
+                    Insert(otherChild.Value.Duplicate(true));
                 }
             }
+        }
 
-            IEnumerator IEnumerable.GetEnumerator()
+        public void Remove(params TKey[] keys)
+        {
+            foreach (var key in keys)
             {
-                return GetEnumerator();
+                if (!Children.TryGetValue(key, out var child)) throw new KeyNotFoundException();
+
+                var node = Children[key];
+                node.Key = default;
+                Children.Remove(key);
             }
         }
 
-        public Node this[TKey key]
+        public void Traverse(Action<Node> action, int maxDepth = -1)
         {
-            get { return Root[key]; }
+            Traverse(action, 0, maxDepth);
         }
 
-        public Node Root { get; } = new Node(default, default);
-
-        public void Merge(Trie<TKey, TValue> trie, Func<Node, Node, TValue> valueMerger)
+        public void TraverseChildren(Action<Node> action, int maxDepth = 0)
         {
-            Root.Merge(trie.Root, valueMerger);
+            foreach (var child in this)
+            {
+                child.Traverse(action, 0, maxDepth);
+            }
         }
 
-        public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b, Func<Node, Node, TValue> valueMerger)
+        void Traverse(Action<Node> action, int currentDepth, int maxDepth)
         {
-            var trie = new Trie<TKey, TValue>();
-            var root = trie.Root;
-            root.Merge(a.Root, (t, u) => u.Value);
-            root.Merge(b.Root, (t, u) => u.Value);
+            action(this);
 
-            return trie;
+            if (currentDepth == maxDepth) return;
+
+            foreach (var child in this)
+            {
+                child.Traverse(action, currentDepth + 1, maxDepth);
+            }
         }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
+        }
+    }
+
+    public Node this[TKey key]
+    {
+        get { return Root[key]; }
+    }
+
+    public Node Root { get; } = new Node(default, default);
+
+    public void Merge(Trie<TKey, TValue> trie, Func<Node, Node, TValue> valueMerger)
+    {
+        Root.Merge(trie.Root, valueMerger);
+    }
+
+    public static Trie<TKey, TValue> Merge(Trie<TKey, TValue> a, Trie<TKey, TValue> b, Func<Node, Node, TValue> valueMerger)
+    {
+        var trie = new Trie<TKey, TValue>();
+        var root = trie.Root;
+        root.Merge(a.Root, (t, u) => u.Value);
+        root.Merge(b.Root, (t, u) => u.Value);
+
+        return trie;
     }
 }

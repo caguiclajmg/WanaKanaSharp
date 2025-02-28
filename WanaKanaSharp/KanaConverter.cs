@@ -25,15 +25,13 @@
 // THE SOFTWARE.
 
 using System;
-
 using WanaKanaSharp.Utility;
 
-namespace WanaKanaSharp
+namespace WanaKanaSharp;
+
+public class KanaConverter
 {
-    public class KanaConverter
-    {
-        public static string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping) {
-            throw new NotImplementedException();
-        }
+    public static string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping) {
+        throw new NotImplementedException();
     }
 }
