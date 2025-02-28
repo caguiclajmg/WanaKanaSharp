@@ -65,6 +65,11 @@ public class HepburnConverterTest
     [TestCase("ふフ", ExpectedResult = "fufu")]
     [TestCase("ふとん", ExpectedResult = "futon")]
     [TestCase("フリー", ExpectedResult = "furii")]
+    [TestCase("し", ExpectedResult = "shi")]
+    [TestCase("しゅ", ExpectedResult = "shu")]
+    [TestCase("ち", ExpectedResult = "chi")]
+    [TestCase("ふ", ExpectedResult = "fu")]
+    [TestCase("じゃ", ExpectedResult = "ja")]
     public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
     {
         var converter = new HepburnRomajiConverter();
