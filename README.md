@@ -4,6 +4,10 @@
     <h6>This project is a port of :crocodile: <a href="https://github.com/WaniKani/WanaKana">WanaKana</a> :crab:</h6>
 </div>
 
+## 🚧 Notice
+
+This project started out as a direct port of [WanaKana](https://wanakana.com/) but is now headed towards deviation from the original as certain features are being added (e.g., supporting multiple romanization methods).
+
 ## Status
 
 <div align="center">
@@ -63,9 +67,12 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
     WanaKana.IsKana("これはキュートです") // true
     WanaKana.IsKanji("日本語") // true
 
-    // Hepburn Romanization
-    var hepburnConverter = new HepburnConverter();
-    WanaKana.ToRomaji(hepburnConverter, "ひらがな"); // hiragana
-    WanaKana.ToRomaji(hepburnConverter, "カタカナ"); // katakana
-    WanaKana.ToRomaji(hepburnConverter, "今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
+    // Romaji conversion
+    var converter = new HepburnRomajiConverter();
+    // alternative romanization methods
+    // var converter = new KunreiRomajiConverter();
+    // var converter = new NihonRomajiConverter();
+    converter.ToRomaji("ひらがな"); // hiragana
+    converter.ToRomaji("カタカナ"); // katakana
+    converter.ToRomaji("今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
 ```
