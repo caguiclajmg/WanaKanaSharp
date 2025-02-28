@@ -24,14 +24,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using System;
 using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp;
 
-public class KanaConverter
+public abstract class KanaConverter
 {
-    public static string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping) {
-        throw new NotImplementedException();
-    }
+    public abstract string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping);
 }
