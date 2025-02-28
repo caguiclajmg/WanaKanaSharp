@@ -65,7 +65,7 @@ public class WanaKanaTest
     [TestCase("A", ExpectedResult = false)]
     [TestCase("あア", ExpectedResult = false)]
     [TestCase("ゲーム", ExpectedResult = true)]
-    public bool IsKatkana(string input) => WanaKana.IsKatakana(input);
+    public bool IsKatakana(string input) => WanaKana.IsKatakana(input);
 
     [TestCase(null, ExpectedResult = false)]
     [TestCase("", ExpectedResult = false)]
