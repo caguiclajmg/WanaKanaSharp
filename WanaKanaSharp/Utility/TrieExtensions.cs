@@ -9,7 +9,11 @@ namespace WanaKanaSharp.Utility;
 
 public static class TrieExtensions
 {
-    public static Trie<TKey, TValue> Union<TKey, TValue>(this Trie<TKey, TValue> left, Trie<TKey, TValue> right, Func<Trie<TKey, TValue>.Node, Trie<TKey, TValue>.Node, TValue> valueMerger)
+    public static Trie<TKey, TValue> Union<TKey, TValue>(
+        this Trie<TKey, TValue> left,
+        Trie<TKey, TValue> right,
+        Func<Trie<TKey, TValue>.Node, Trie<TKey, TValue>.Node, TValue> valueMerger
+    ) where TKey : notnull
     {
         var c = new Trie<TKey, TValue>();
         c.Merge(left, valueMerger);

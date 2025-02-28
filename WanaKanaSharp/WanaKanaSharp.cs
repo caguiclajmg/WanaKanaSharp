@@ -57,7 +57,7 @@ public static class WanaKana
     /// <returns><c>true</c>, if the input is a Romaji character, <c>false</c> otherwise.</returns>
     /// <param name="input">The character to test.</param>
     /// <param name="allowed">Additional allowed characters.</param>
-    public static bool IsRomaji(char input, Regex allowed = null)
+    public static bool IsRomaji(char input, Regex? allowed = null)
     {
         return IsCharInRange(input, CharacterConstants.RomajiRanges) || IsMatch(input, allowed);
     }
@@ -68,7 +68,7 @@ public static class WanaKana
     /// <returns><c>true</c>, if the string consists exclusively of Romaji characters, <c>false</c> otherwise.</returns>
     /// <param name="input">The string to test.</param>
     /// <param name="allowed">Additional allowed characters.</param>
-    public static bool IsRomaji(string input, Regex allowed = null)
+    public static bool IsRomaji(string input, Regex? allowed = null)
     {
         return !string.IsNullOrEmpty(input) && input.All((c) => IsRomaji(c, allowed));
     }
@@ -159,7 +159,7 @@ public static class WanaKana
     /// <returns><c>true</c>, if the input is a Japanese character, <c>false</c> otherwise.</returns>
     /// <param name="input">The character to test.</param>
     /// <param name="allowed">Additional allowed characters.</param>
-    public static bool IsJapanese(char input, Regex allowed = null)
+    public static bool IsJapanese(char input, Regex? allowed = null)
     {
         return IsCharInRange(input, CharacterConstants.JapaneseRanges) || IsMatch(input, allowed);
     }
@@ -170,7 +170,7 @@ public static class WanaKana
     /// <returns><c>true</c>, if the string consists exclusively of Japanese characters, <c>false</c> otherwise.</returns>
     /// <param name="input">The string to test.</param>
     /// <param name="allowed">Additional allowed characters.</param>
-    public static bool IsJapanese(string input, Regex allowed = null)
+    public static bool IsJapanese(string input, Regex? allowed = null)
     {
         return !string.IsNullOrEmpty(input) && input.All((c) => IsJapanese(c, allowed));
     }
@@ -202,7 +202,7 @@ public static class WanaKana
 
     public static string[] Tokenize(string input, bool compact = false, bool detailed = false)
     {
-        if (string.IsNullOrEmpty(input)) return null;
+        if (string.IsNullOrEmpty(input)) return [];
 
         var tokens = new List<string>();
 
@@ -270,7 +270,7 @@ public static class WanaKana
         return TokenType.Unknown;
     }
 
-    static bool HasRomaji(string input, Regex allowed = null)
+    static bool HasRomaji(string input, Regex? allowed = null)
     {
         return !string.IsNullOrEmpty(input) && input.Any((c) => IsRomaji(c, allowed));
     }
@@ -295,7 +295,7 @@ public static class WanaKana
         return !string.IsNullOrEmpty(input) && input.Any(IsKanji);
     }
 
-    static bool HasJapanese(string input, Regex allowed = null)
+    static bool HasJapanese(string input, Regex? allowed = null)
     {
         return !string.IsNullOrEmpty(input) && input.Any((c) => IsJapanese(c, allowed));
     }
@@ -315,7 +315,7 @@ public static class WanaKana
         return ranges.Any((r) => IsCharInRange(input, r));
     }
 
-    static bool IsMatch(char input, Regex allowed)
+    static bool IsMatch(char input, Regex? allowed)
     {
         return (allowed != null) && (allowed.IsMatch(input.ToString()));
     }

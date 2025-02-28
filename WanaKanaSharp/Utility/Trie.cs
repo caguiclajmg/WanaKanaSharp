@@ -30,7 +30,7 @@ using System.Collections.Generic;
 
 namespace WanaKanaSharp.Utility;
 
-public class Trie<TKey, TValue>
+public class Trie<TKey, TValue> where TKey : notnull
 {
     public static Trie<TKey, TValue> Empty { get; } = new Trie<TKey, TValue>();
 
@@ -68,7 +68,7 @@ public class Trie<TKey, TValue>
         }
 
         public TKey Key { get; private set; } = key;
-        public Node Parent { get; private set; } = null;
+        public Node? Parent { get; private set; } = null;
         public TValue Value { get; set; } = value;
 
         readonly Dictionary<TKey, Node> Children = [];
@@ -94,9 +94,9 @@ public class Trie<TKey, TValue>
             return node;
         }
 
-        public Node GetChild(TKey key)
+        public Node? GetChild(TKey key)
         {
-            if (Children.TryGetValue(key, out Node node)) return node;
+            if (Children.TryGetValue(key, out Node? node)) return node;
 
             return null;
         }
@@ -159,7 +159,7 @@ public class Trie<TKey, TValue>
                 if (!Children.TryGetValue(key, out var child)) throw new KeyNotFoundException();
 
                 var node = Children[key];
-                node.Key = default;
+                node.Key = default!;
                 Children.Remove(key);
             }
         }
@@ -200,7 +200,7 @@ public class Trie<TKey, TValue>
         get { return Root[key]; }
     }
 
-    public Node Root { get; } = new Node(default, default);
+    public Node Root { get; } = new Node(default!, default!);
 
     public void Merge(Trie<TKey, TValue> trie, Func<Node, Node, TValue> valueMerger)
     {
