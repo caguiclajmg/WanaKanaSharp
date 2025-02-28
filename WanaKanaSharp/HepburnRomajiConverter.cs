@@ -112,13 +112,13 @@ public class HepburnRomajiConverter : RomajiConverter
             var sokuon = root.Insert(('っ', ""));
             var exceptions = new[]
             {
-                    'あ', 'い', 'う', 'え', 'お',
-                    'や', 'ゆ', 'よ',
-                    'ん',
-                    'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
-                    'ゃ', 'ゅ', 'ょ',
-                    'っ'
-                };
+                'あ', 'い', 'う', 'え', 'お',
+                'や', 'ゆ', 'よ',
+                'ん',
+                'ぁ', 'ぃ', 'ぅ', 'ぇ', 'ぉ',
+                'ゃ', 'ゅ', 'ょ',
+                'っ'
+            };
 
             foreach (var child in root.Where((node) => !exceptions.Contains(node.Key)))
             {
