@@ -64,7 +64,7 @@ public class Trie<TKey, TValue>
 
             public bool MoveNext() => DictionaryEnumerator.MoveNext();
 
-            public void Reset() => throw new NotImplementedException();
+            public void Reset() => ((IEnumerator<KeyValuePair<TKey, Node>>)DictionaryEnumerator).Reset();
         }
 
         public TKey Key { get; private set; } = key;
