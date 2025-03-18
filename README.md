@@ -58,6 +58,8 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
 
 ## Examples
 
+### Utility Class
+
 ```cs
     using WanaKanaSharp;
 
@@ -66,8 +68,11 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
     WanaKana.IsKatakana("テレビ"); // true
     WanaKana.IsKana("これはキュートです") // true
     WanaKana.IsKanji("日本語") // true
+```
 
-    // Romaji conversion
+### Romaji Conversion
+
+```cs
     var converter = new HepburnConverter();
     // alternative romanization methods
     // var converter = new KunreiConverter();
@@ -75,4 +80,17 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
     converter.ToRomaji("ひらがな"); // hiragana
     converter.ToRomaji("カタカナ"); // katakana
     converter.ToRomaji("今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
+```
+
+### Kana Conversion
+
+```cs
+    var converter = new HepburnConverter();
+    converter.ToKana("kyō"); // きょう
+
+    converter = new KunreiConverter();
+    converter.ToKana("kyô"); // きょう
+
+    converter = new NihonConverter();
+    converter.ToKana("kyô"); // きょう
 ```
