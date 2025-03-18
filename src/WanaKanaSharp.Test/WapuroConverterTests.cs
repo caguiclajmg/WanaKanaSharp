@@ -31,9 +31,11 @@ using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp.Test;
 
-[TestFixture()]
+[TestFixture]
 public class WapuroConverterTests
 {
+    private readonly HepburnConverter _converter = new();
+
     [TestCase(null, ExpectedResult = "")]
     [TestCase("", ExpectedResult = "")]
     [TestCase("ワニカニ　ガ　スゴイ　ダ", ExpectedResult = "wanikani ga sugoi da")]
@@ -72,22 +74,20 @@ public class WapuroConverterTests
     [TestCase("ち", ExpectedResult = "chi")]
     [TestCase("ふ", ExpectedResult = "fu")]
     [TestCase("じゃ", ExpectedResult = "ja")]
-    public string Convert(string input, bool upcaseKatakana = false)
-    {
-        var converter = new WapuroConverter();
-        return converter.ToRomaji(input, upcaseKatakana);
-    }
+    public string ToRomaji(string input, bool upcaseKatakana = false) => _converter.ToRomaji(input, upcaseKatakana);
 
     [Test]
-    public void ConvertWithCustomMapping()
+    public void ToRomajiWithCustomMapping()
     {
         var customMapping = new InMemoryTrie<char, string>();
         var root = customMapping.Root;
         root.Insert(('い', "i"));
         root['い'].Insert(('ぬ', "dog"));
 
-        var converter = new HepburnConverter();
-        converter.ToRomaji("いぬ").ShouldBe("inu");
-        converter.ToRomaji("いぬ", customRomajiMapping: customMapping).ShouldBe("dog");
+        _converter.ToRomaji("いぬ").ShouldBe("inu");
+        _converter.ToRomaji("いぬ", customRomajiMapping: customMapping).ShouldBe("dog");
     }
+
+    [TestCase("kyō", ExpectedResult = "きょう")]
+    public string ToKana(string input, bool useObsoleteKana = false) => _converter.ToKana(input, useObsoleteKana: useObsoleteKana);
 }

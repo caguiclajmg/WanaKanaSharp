@@ -7,6 +7,8 @@ namespace WanaKanaSharp.Test;
 [TestFixture]
 public class NihonConverterTests
 {
+    private readonly HepburnConverter _converter = new();
+
     [TestCase(null, ExpectedResult = "")]
     [TestCase("", ExpectedResult = "")]
     [TestCase("ワニカニ　ガ　スゴイ　ダ", ExpectedResult = "wanikani ga sugoi da")]
@@ -45,9 +47,9 @@ public class NihonConverterTests
     [TestCase("ち", ExpectedResult = "ti")]
     [TestCase("ふ", ExpectedResult = "hu")]
     [TestCase("じゃ", ExpectedResult = "zya")]
-    public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
-    {
-        var converter = new NihonConverter();
-        return converter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
-    }
+    public string ToRomaji(string input, bool upcaseKatakana = false) => _converter.ToRomaji(input, upcaseKatakana);
+
+    [TestCase("kyō", ExpectedResult = "きょう")]
+    public string ToKana(string input, bool useObsoleteKana = false) => _converter.ToKana(input, useObsoleteKana: useObsoleteKana);
+
 }
