@@ -68,10 +68,10 @@ Navigate to your project's directory and do: `dotnet add package WanaKanaSharp`
     WanaKana.IsKanji("日本語") // true
 
     // Romaji conversion
-    var converter = new HepburnRomajiConverter();
+    var converter = new HepburnConverter();
     // alternative romanization methods
-    // var converter = new KunreiRomajiConverter();
-    // var converter = new NihonRomajiConverter();
+    // var converter = new KunreiConverter();
+    // var converter = new NihonConverter();
     converter.ToRomaji("ひらがな"); // hiragana
     converter.ToRomaji("カタカナ"); // katakana
     converter.ToRomaji("今日 は パーティ", upcaseKatakana = true); // 今日 ha PAATEI
