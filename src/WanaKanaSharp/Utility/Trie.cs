@@ -2,7 +2,7 @@
 // Trie.cs
 //
 // Author:
-//       John Mark Gabriel Caguicla <jmg.caguicla@yozuru.jp>
+//       John Mark Gabriel Caguicla <jmg.caguicla@guarandoo.me>
 //
 // Copyright (c) 2020 John Mark Gabriel Caguicla
 //

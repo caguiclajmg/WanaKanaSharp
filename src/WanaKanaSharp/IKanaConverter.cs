@@ -2,7 +2,7 @@
 // KanaConverter.cs
 //
 // Author:
-//       John Mark Gabriel Caguicla <jmg.caguicla@yozuru.jp>
+//       John Mark Gabriel Caguicla <jmg.caguicla@guarandoo.me>
 //
 // Copyright (c) 2019 John Mark Gabriel Caguicla
 //
