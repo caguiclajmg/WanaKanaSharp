@@ -25,12 +25,14 @@
 // THE SOFTWARE.
 
 using NUnit.Framework;
+using Shouldly;
+using WanaKanaSharp.Converters;
 using WanaKanaSharp.Utility;
 
 namespace WanaKanaSharp.Test;
 
 [TestFixture()]
-public class HepburnConverterTest
+public class WapuroConverterTests
 {
     [TestCase(null, ExpectedResult = "")]
     [TestCase("", ExpectedResult = "")]
@@ -42,8 +44,8 @@ public class HepburnConverterTest
     [TestCase("ワニカニ　が　すごい　だ", true, ExpectedResult = "WANIKANI ga sugoi da")]
     [TestCase("ばつげーむ", ExpectedResult = "batsuge-mu")]
     [TestCase("一抹げーむ", ExpectedResult = "一抹ge-mu")]
-    [TestCase("スーパー", ExpectedResult = "suupaa")]
-    [TestCase("缶コーヒー", ExpectedResult = "缶koohii")]
+    [TestCase("スーパー", ExpectedResult = "su-pa-")]
+    [TestCase("缶コーヒー", ExpectedResult = "缶ko-hi-")]
     // TODO: Add missing test case
     [TestCase("きんにくまん", ExpectedResult = "kinnikuman")]
     [TestCase("んんにんにんにゃんやん", ExpectedResult = "nnninninnyan'yan")]
@@ -64,30 +66,28 @@ public class HepburnConverterTest
     [TestCase("シンヨ", ExpectedResult = "shin'yo")]
     [TestCase("ふフ", ExpectedResult = "fufu")]
     [TestCase("ふとん", ExpectedResult = "futon")]
-    [TestCase("フリー", ExpectedResult = "furii")]
+    [TestCase("フリー", ExpectedResult = "furi-")]
     [TestCase("し", ExpectedResult = "shi")]
     [TestCase("しゅ", ExpectedResult = "shu")]
     [TestCase("ち", ExpectedResult = "chi")]
     [TestCase("ふ", ExpectedResult = "fu")]
     [TestCase("じゃ", ExpectedResult = "ja")]
-    public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
+    public string Convert(string input, bool upcaseKatakana = false)
     {
-        var converter = new HepburnRomajiConverter();
-        return converter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
+        var converter = new WapuroConverter();
+        return converter.ToRomaji(input, upcaseKatakana);
     }
 
     [Test]
     public void ConvertWithCustomMapping()
     {
-        {
-            var customMapping = new Trie<char, string>();
-            var root = customMapping.Root;
-            root.Insert(('い', "i"));
-            root['い'].Insert(('ぬ', "dog"));
+        var customMapping = new InMemoryTrie<char, string>();
+        var root = customMapping.Root;
+        root.Insert(('い', "i"));
+        root['い'].Insert(('ぬ', "dog"));
 
-            var converter = new HepburnRomajiConverter();
-            Assert.AreEqual("inu", converter.ToRomaji("いぬ"));
-            Assert.AreEqual("dog", converter.ToRomaji("いぬ", customRomajiMapping: customMapping));
-        }
+        var converter = new HepburnConverter();
+        converter.ToRomaji("いぬ").ShouldBe("inu");
+        converter.ToRomaji("いぬ", customRomajiMapping: customMapping).ShouldBe("dog");
     }
 }

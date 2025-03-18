@@ -44,6 +44,8 @@ static class CharacterConstants
     public const char KanjiEnd = '\u9FAF';
     public const char ProlongedSoundMark = '\u30FC';
     public const char KanaSlashDot = '\u30FB';
+    public const char Circumflex = '\u0302';
+    public const char Macron = '\u0304';
 
     public static readonly (char Start, char End) ZenkakuNumbers = ('\uFF10', '\uFF19');
     public static readonly (char Start, char End) ZenkakuUppercase = (ZenkakuUppercaseStart, ZenkakuUppercaseEnd);

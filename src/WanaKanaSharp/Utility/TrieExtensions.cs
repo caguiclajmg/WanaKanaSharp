@@ -1,27 +1,16 @@
-﻿using System;
-
-namespace WanaKanaSharp.Utility;
+﻿namespace WanaKanaSharp.Utility;
 
 public static class TrieExtensions
 {
     public static void Merge<TKey, TValue>(
-        this Trie<TKey, TValue> trie,
+        this Trie<TKey, TValue> source,
         Trie<TKey, TValue> other,
-        Func<Trie<TKey, TValue>.Node, Trie<TKey, TValue>.Node, TValue> valueMerger
-    ) where TKey : notnull
-    {
-        trie.Root.Merge(other.Root, valueMerger);
-    }
+        ValueMergerDelegate<TKey, TValue> valueMerger,
+        ChildrenMergerDelegate<TKey, TValue> childrenMerger
+    ) where TKey : notnull => source.Root.Merge(other.Root, valueMerger, childrenMerger);
 
-    public static Trie<TKey, TValue> Union<TKey, TValue>(
-        this Trie<TKey, TValue> left,
-        Trie<TKey, TValue> right,
-        Func<Trie<TKey, TValue>.Node, Trie<TKey, TValue>.Node, TValue> valueMerger
-    ) where TKey : notnull
-    {
-        var c = new Trie<TKey, TValue>();
-        c.Merge(left, valueMerger);
-        c.Merge(right, valueMerger);
-        return c;
-    }
+    public static void Merge<TKey, TValue>(
+        this Trie<TKey, TValue> source, 
+        Trie<TKey, TValue> other
+    ) where TKey :notnull => source.Root.Merge(other.Root);
 }

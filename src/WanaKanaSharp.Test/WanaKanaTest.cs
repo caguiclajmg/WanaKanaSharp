@@ -29,7 +29,7 @@ using System.Text.RegularExpressions;
 
 namespace WanaKanaSharp.Test;
 
-[TestFixture()]
+[TestFixture]
 public class WanaKanaTest
 {
     [TestCase(null, ExpectedResult = false)]

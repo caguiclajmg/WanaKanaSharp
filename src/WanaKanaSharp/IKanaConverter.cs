@@ -24,11 +24,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-using WanaKanaSharp.Utility;
-
 namespace WanaKanaSharp;
 
-public abstract class KanaConverter
+public interface IKanaConverter
 {
-    public abstract string ToKana(string input, bool useObsoleteKana, Trie<char, string> customKanaMapping);
+    public string ToKana(string input, bool useObsoleteKana, MyTrie? customKanaMapping = null);
 }

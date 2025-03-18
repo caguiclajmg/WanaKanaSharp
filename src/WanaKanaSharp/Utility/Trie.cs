@@ -30,188 +30,175 @@ using System.Collections.Generic;
 
 namespace WanaKanaSharp.Utility;
 
-public class Trie<TKey, TValue> where TKey : notnull
+public delegate TValue ValueMergerDelegate<TKey, TValue>(Node<TKey, TValue> left, Node<TKey, TValue> right) where TKey : notnull;
+public delegate void ChildrenMergerDelegate<TKey, TValue>(Node<TKey, TValue> left, Node<TKey, TValue> right) where TKey : notnull;
+
+public abstract class Node<TKey, TValue>
+    : IEnumerable<Node<TKey, TValue>>
+    where TKey : notnull
 {
-    public static Trie<TKey, TValue> Empty { get; } = new Trie<TKey, TValue>();
+    public abstract TKey Key { get; protected set; }
+    public abstract TValue Value { get; set; }
+    public abstract Node<TKey, TValue>? Parent { get; protected set; }
 
-    public class Node(TKey key, TValue value) : IEnumerable<Node>
+    protected readonly Dictionary<TKey, Node<TKey, TValue>> Children = [];
+    public bool IsLeaf { get => Children.Count == 0; }
+
+    public Node<TKey, TValue> this[TKey key] => Children[key];
+
+    public bool ContainsKey(TKey key) => Children.ContainsKey(key);
+
+    public abstract Node<TKey, TValue> Duplicate(bool copyChildren = false);
+
+    public Node<TKey, TValue>? GetChild(TKey key)
     {
-        class Enumerator(Dictionary<TKey, Node>.Enumerator enumerator) : IEnumerator<Node>
+        if (Children.TryGetValue(key, out Node<TKey, TValue>? node)) return node;
+
+        return null;
+    }
+
+    public abstract IEnumerator<Node<TKey, TValue>> GetEnumerator();
+
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+
+    public Node<TKey, TValue> Insert(Node<TKey, TValue> child)
+    {
+        child.Parent = this;
+        Children.Add(child.Key, child);
+        return child;
+    }
+
+    public void Insert(params Node<TKey, TValue>[] children)
+    {
+        foreach (var child in children)
         {
-            private bool _disposed;
-
-            Dictionary<TKey, Node>.Enumerator DictionaryEnumerator = enumerator;
-
-            public Node Current { get => DictionaryEnumerator.Current.Value; }
-
-            object IEnumerator.Current => Current;
-
-            protected void Dispose(bool disposing)
-            {
-                if (_disposed) return;
-                if (disposing)
-                {
-                    DictionaryEnumerator.Dispose();
-                }
-                _disposed = true;
-            }
-
-            public void Dispose()
-            {
-                Dispose(disposing: true);
-                GC.SuppressFinalize(this);
-            }
-
-            public bool MoveNext() => DictionaryEnumerator.MoveNext();
-
-            public void Reset() => ((IEnumerator<KeyValuePair<TKey, Node>>)DictionaryEnumerator).Reset();
-        }
-
-        public TKey Key { get; private set; } = key;
-        public Node? Parent { get; private set; } = null;
-        public TValue Value { get; set; } = value;
-
-        readonly Dictionary<TKey, Node> Children = [];
-        public bool IsLeaf { get => Children.Count == 0; }
-
-        public Node this[TKey key] => Children[key];
-
-        public bool ContainsKey(TKey key) => Children.ContainsKey(key);
-
-        public Node Duplicate(bool copyChildren = false)
-        {
-            var node = new Node(Key, Value);
-
-            if (copyChildren)
-            {
-                foreach (var child in this)
-                {
-                    var c = child.Duplicate(copyChildren);
-                    node.Insert(c);
-                }
-            }
-
-            return node;
-        }
-
-        public Node? GetChild(TKey key)
-        {
-            if (Children.TryGetValue(key, out Node? node)) return node;
-
-            return null;
-        }
-
-        public IEnumerator<Node> GetEnumerator()
-        {
-            return new Enumerator(Children.GetEnumerator());
-        }
-
-        public Node Insert(Node child)
-        {
-            child.Parent = this;
-            Children.Add(child.Key, child);
-            return child;
-        }
-
-        public void Insert(params Node[] children)
-        {
-            foreach (var child in children)
-            {
-                Insert(child);
-            }
-        }
-
-        public Node Insert((TKey Key, TValue Value) child)
-        {
-            var node = new Node(child.Key, child.Value);
-            return Insert(node);
-        }
-
-        public void Insert(params (TKey Key, TValue Value)[] children)
-        {
-            foreach (var child in children)
-            {
-                Insert(child);
-            }
-        }
-
-        public void Merge(Node other, Func<Node, Node, TValue> valueMerger)
-        {
-            Value = valueMerger(this, other);
-
-            foreach (var otherChild in other.Children)
-            {
-                if (Children.TryGetValue(otherChild.Key, out var child))
-                {
-                    child.Merge(otherChild.Value, valueMerger);
-                }
-                else
-                {
-                    Insert(otherChild.Value.Duplicate(true));
-                }
-            }
-        }
-
-        public void Remove(params TKey[] keys)
-        {
-            foreach (var key in keys)
-            {
-                if (!Children.TryGetValue(key, out var child)) throw new KeyNotFoundException();
-
-                var node = Children[key];
-                node.Key = default!;
-                Children.Remove(key);
-            }
-        }
-
-        public void Traverse(Action<Node> action, int maxDepth = -1)
-        {
-            Traverse(action, 0, maxDepth);
-        }
-
-        public void TraverseChildren(Action<Node> action, int maxDepth = 0)
-        {
-            foreach (var child in this)
-            {
-                child.Traverse(action, 0, maxDepth);
-            }
-        }
-
-        void Traverse(Action<Node> action, int currentDepth, int maxDepth)
-        {
-            action(this);
-
-            if (currentDepth == maxDepth) return;
-
-            foreach (var child in this)
-            {
-                child.Traverse(action, currentDepth + 1, maxDepth);
-            }
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
+            Insert(child);
         }
     }
 
-    public Node this[TKey key]
+    public abstract Node<TKey, TValue> Insert((TKey Key, TValue Value) child);
+
+    public void Insert(params (TKey Key, TValue Value)[] children)
+    {
+        foreach (var child in children)
+        {
+            Insert(child);
+        }
+    }
+
+    public void Merge(
+        Node<TKey, TValue> other,
+        ValueMergerDelegate<TKey, TValue> valueMerger,
+        ChildrenMergerDelegate<TKey, TValue> childrenMerger
+    )
+    {
+        Value = valueMerger(this, other);
+        childrenMerger(this, other);
+    }
+
+    public void Merge(Node<TKey, TValue> other)
+    {
+        Merge(other, ValueMerger, ChildrenMerger);
+
+        static void ChildrenMerger(Node<TKey, TValue> left, Node<TKey, TValue> right)
+        {
+            var newChildren = new Dictionary<TKey, Node<TKey, TValue>>();
+
+            foreach (var (key, child) in left.Children)
+            {
+                if (!right.Children.TryGetValue(key, out var otherChild)) continue;
+                // we both have the key, recursively merge
+                child.Merge(otherChild, ValueMerger, ChildrenMerger);
+            }
+
+            foreach (var (key, otherChild) in right.Children)
+            {
+                if (left.Children.ContainsKey(key)) continue;
+                // we don't have this key, create a duplicate and add to self
+                left.Insert(otherChild.Duplicate(true));
+            }
+        }
+
+        static TValue ValueMerger(Node<TKey, TValue> left, Node<TKey, TValue> right) => right.Value;
+    }
+
+    public void Remove(params TKey[] keys)
+    {
+        foreach (var key in keys)
+        {
+            if (!Children.TryGetValue(key, out var child)) throw new KeyNotFoundException();
+
+            var node = Children[key];
+            node.Key = default!;
+            Children.Remove(key);
+        }
+    }
+
+    public void Traverse(Action<Node<TKey, TValue>> action, int maxDepth = -1)
+    {
+        Traverse(action, 0, maxDepth);
+    }
+
+    public void TraverseChildren(Action<Node<TKey, TValue>> action, int maxDepth = 0)
+    {
+        foreach (var child in this)
+        {
+            child.Traverse(action, 0, maxDepth);
+        }
+    }
+
+    void Traverse(Action<Node<TKey, TValue>> action, int currentDepth, int maxDepth)
+    {
+        action(this);
+
+        if (currentDepth == maxDepth) return;
+
+        foreach (var child in this)
+        {
+            child.Traverse(action, currentDepth + 1, maxDepth);
+        }
+    }
+}
+
+public abstract class Trie<TKey, TValue>(Node<TKey, TValue> root)
+    where TKey : notnull
+{
+    public Node<TKey, TValue> this[TKey key]
     {
         get { return Root[key]; }
     }
 
-    public Node Root { get; } = new Node(default!, default!);
+    public Node<TKey, TValue> Root { get; protected init; } = root;
+}
 
-    public static Trie<TKey, TValue> Merge(
+public static class Trie
+{
+    public static TTrie Merge<TKey, TValue, TTrie>(
         Trie<TKey, TValue> a,
         Trie<TKey, TValue> b,
-        Func<Node, Node, TValue> valueMerger
-    )
+        ValueMergerDelegate<TKey, TValue> valueMerger,
+        ChildrenMergerDelegate<TKey, TValue> childrenMerger
+    ) where TKey : notnull where TTrie : Trie<TKey, TValue>, new()
     {
-        var trie = new Trie<TKey, TValue>();
+        var trie = new TTrie();
         var root = trie.Root;
-        root.Merge(a.Root, valueMerger);
-        root.Merge(b.Root, valueMerger);
+        root.Merge(a.Root, valueMerger, childrenMerger);
+        root.Merge(b.Root, valueMerger, childrenMerger);
+        return trie;
+    }
+
+    public static TTrie Merge<TKey, TValue, TTrie>(
+        Trie<TKey, TValue> a,
+        Trie<TKey, TValue> b
+    ) where TKey : notnull where TTrie : Trie<TKey, TValue>, new()
+    {
+        var trie = new TTrie();
+        var root = trie.Root;
+        root.Merge(a.Root);
+        root.Merge(b.Root);
 
         return trie;
     }

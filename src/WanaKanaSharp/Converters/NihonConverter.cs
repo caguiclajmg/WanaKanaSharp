@@ -2,16 +2,14 @@
 using System.Linq;
 using WanaKanaSharp.Utility;
 
-namespace WanaKanaSharp;
+namespace WanaKanaSharp.Converters;
 
-public class KunreiRomajiConverter : RomajiConverter
+public class NihonConverter : Converter
 {
-    static readonly Trie<char, string> RomajiTree = new();
-
-    static Trie<char, string> BuildHiraganaTree()
+    private void BuildHiraganaTree(MyTrie trie)
     {
-        var trie = new Trie<char, string>();
-        var root = trie.Root;
+        var romajiTrie = new MyInMemoryTrie();
+        var root = romajiTrie.Root;
 
         root.Insert(('あ', "a"), ('い', "i"), ('う', "u"), ('え', "e"), ('お', "o"),
                     ('か', "ka"), ('き', "ki"), ('く', "ku"), ('け', "ke"), ('こ', "ko"),
@@ -114,13 +112,13 @@ public class KunreiRomajiConverter : RomajiConverter
             }, -1);
         }
 
-        return trie;
+        trie.Merge(romajiTrie);
     }
 
-    static Trie<char, string> BuildKatakanaTree()
+    private void BuildKatakanaTree(MyTrie trie)
     {
-        var trie = new Trie<char, string>();
-        var root = trie.Root;
+        var romajiTrie = new MyInMemoryTrie();
+        var root = romajiTrie.Root;
 
         root.Insert(('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
                     ('カ', "ka"), ('キ', "ki"), ('ク', "ku"), ('ケ', "ke"), ('コ', "ko"),
@@ -236,39 +234,19 @@ public class KunreiRomajiConverter : RomajiConverter
             }
         }
 
-        return trie;
+        trie.Merge(romajiTrie);
     }
 
-    static KunreiRomajiConverter()
+    protected override void BuildRomajiTree(MyTrie trie)
     {
-        var hiraganaTree = BuildHiraganaTree();
-        var katakanaTree = BuildKatakanaTree();
-        var kanaTree = Trie<char, string>.Merge(hiraganaTree, katakanaTree, (a, b) => b.Value);
-
-        var root = RomajiTree.Root;
-
-        root.Insert(('。', "."),
-                    ('、', ","),
-                    ('：', ":"),
-                    ('・', "/"),
-                    ('！', "!"),
-                    ('？', "?"),
-                    ('〜', "~"),
-                    ('ー', "-"),
-                    ('「', "‘"),
-                    ('」', "’"),
-                    ('『', "“"),
-                    ('』', "”"),
-                    ('［', "["),
-                    ('］', "]"),
-                    ('（', "("),
-                    ('）', ")"),
-                    ('｛', "{"),
-                    ('｝', "}"),
-                    ('　', " "));
-
-        RomajiTree.Merge(kanaTree, (a, b) => b.Value);
+        BuildHiraganaTree(trie);
+        BuildKatakanaTree(trie);
     }
 
-    protected override Trie<char, string> GetTrie() => RomajiTree;
+    protected override void BuildKanaTree(MyTrie trie) { }
+
+    public override string ToKana(string input, bool useObsoleteKana, MyTrie? customKanaMapping = null)
+    {
+        throw new NotImplementedException($"{nameof(ToKana)} is currently not implemented for {nameof(NihonConverter)}.");
+    }
 }

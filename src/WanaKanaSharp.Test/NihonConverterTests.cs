@@ -5,7 +5,7 @@ using WanaKanaSharp.Utility;
 namespace WanaKanaSharp.Test;
 
 [TestFixture]
-public class KunreiConverterTests
+public class NihonConverterTests
 {
     [TestCase(null, ExpectedResult = "")]
     [TestCase("", ExpectedResult = "")]
@@ -47,7 +47,7 @@ public class KunreiConverterTests
     [TestCase("じゃ", ExpectedResult = "zya")]
     public string Convert(string input, bool upcaseKatakana = false, Trie<char, string> customRomajiMapping = null)
     {
-        var converter = new KunreiConverter();
+        var converter = new NihonConverter();
         return converter.ToRomaji(input, upcaseKatakana, customRomajiMapping);
     }
 }

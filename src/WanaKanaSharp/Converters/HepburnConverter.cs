@@ -28,35 +28,42 @@ using System;
 using System.Linq;
 using WanaKanaSharp.Utility;
 
-namespace WanaKanaSharp;
+namespace WanaKanaSharp.Converters;
 
-public class HepburnRomajiConverter : RomajiConverter
+public class HepburnConverter : Converter
 {
-    static readonly Trie<char, string> RomajiTree = new();
-
-    static Trie<char, string> BuildHiraganaTree()
+    protected virtual string TranslateLongVowel(MyNode node)
     {
-        var trie = new Trie<char, string>();
-        var root = trie.Root;
+        var value = node.Value;
+        var translated = value[..1].ToString() + (value[^1].ToString() + CharacterConstants.Macron.ToString()).Normalize();
+        return translated;
+    }
 
-        root.Insert(('あ', "a"), ('い', "i"), ('う', "u"), ('え', "e"), ('お', "o"),
-                    ('か', "ka"), ('き', "ki"), ('く', "ku"), ('け', "ke"), ('こ', "ko"),
-                    ('さ', "sa"), ('し', "shi"), ('す', "su"), ('せ', "se"), ('そ', "so"),
-                    ('た', "ta"), ('ち', "chi"), ('つ', "tsu"), ('て', "te"), ('と', "to"),
-                    ('な', "na"), ('に', "ni"), ('ぬ', "nu"), ('ね', "ne"), ('の', "no"),
-                    ('は', "ha"), ('ひ', "hi"), ('ふ', "fu"), ('へ', "he"), ('ほ', "ho"),
-                    ('ま', "ma"), ('み', "mi"), ('む', "mu"), ('め', "me"), ('も', "mo"),
-                    ('や', "ya"), ('ゆ', "yu"), ('よ', "yo"),
-                    ('ら', "ra"), ('り', "ri"), ('る', "ru"), ('れ', "re"), ('ろ', "ro"),
-                    ('わ', "wa"), ('を', "wo"),
-                    ('ん', "n"),
-                    ('が', "ga"), ('ぎ', "gi"), ('ぐ', "gu"), ('げ', "ge"), ('ご', "go"),
-                    ('ざ', "za"), ('じ', "ji"), ('ず', "zu"), ('ぜ', "ze"), ('ぞ', "zo"),
-                    ('だ', "da"), ('ぢ', "ji"), ('づ', "zu"), ('で', "de"), ('ど', "do"),
-                    ('ば', "ba"), ('び', "bi"), ('ぶ', "bu"), ('べ', "be"), ('ぼ', "bo"),
-                    ('ぱ', "pa"), ('ぴ', "pi"), ('ぷ', "pu"), ('ぺ', "pe"), ('ぽ', "po"),
-                    ('ぁ', "a"), ('ぃ', "i"), ('ぅ', "u"), ('ぇ', "e"), ('ぉ', "o"),
-                    ('ゃ', "ya"), ('ゅ', "yu"), ('ょ', "yo"));
+    private void BuildHiraganaRomajiTree(MyTrie trie)
+    {
+        var romajiTrie = new MyInMemoryTrie();
+        var root = romajiTrie.Root;
+
+        root.Insert(
+            ('あ', "a"), ('い', "i"), ('う', "u"), ('え', "e"), ('お', "o"),
+            ('か', "ka"), ('き', "ki"), ('く', "ku"), ('け', "ke"), ('こ', "ko"),
+            ('さ', "sa"), ('し', "shi"), ('す', "su"), ('せ', "se"), ('そ', "so"),
+            ('た', "ta"), ('ち', "chi"), ('つ', "tsu"), ('て', "te"), ('と', "to"),
+            ('な', "na"), ('に', "ni"), ('ぬ', "nu"), ('ね', "ne"), ('の', "no"),
+            ('は', "ha"), ('ひ', "hi"), ('ふ', "fu"), ('へ', "he"), ('ほ', "ho"),
+            ('ま', "ma"), ('み', "mi"), ('む', "mu"), ('め', "me"), ('も', "mo"),
+            ('や', "ya"), ('ゆ', "yu"), ('よ', "yo"),
+            ('ら', "ra"), ('り', "ri"), ('る', "ru"), ('れ', "re"), ('ろ', "ro"),
+            ('わ', "wa"), ('を', "wo"),
+            ('ん', "n"),
+            ('が', "ga"), ('ぎ', "gi"), ('ぐ', "gu"), ('げ', "ge"), ('ご', "go"),
+            ('ざ', "za"), ('じ', "ji"), ('ず', "zu"), ('ぜ', "ze"), ('ぞ', "zo"),
+            ('だ', "da"), ('ぢ', "ji"), ('づ', "zu"), ('で', "de"), ('ど', "do"),
+            ('ば', "ba"), ('び', "bi"), ('ぶ', "bu"), ('べ', "be"), ('ぼ', "bo"),
+            ('ぱ', "pa"), ('ぴ', "pi"), ('ぷ', "pu"), ('ぺ', "pe"), ('ぽ', "po"),
+            ('ぁ', "a"), ('ぃ', "i"), ('ぅ', "u"), ('ぇ', "e"), ('ぉ', "o"),
+            ('ゃ', "ya"), ('ゅ', "yu"), ('ょ', "yo")
+        );
 
         {
             var whitelist = new[] { 'き', 'に', 'ひ', 'み', 'り', 'ぎ', 'び', 'ぴ' };
@@ -138,34 +145,46 @@ public class HepburnRomajiConverter : RomajiConverter
                     node.Value = value[0] + value;
                 }
             }, -1);
+
+            {
+                var blacklist = new[] { 'ん', 'っ' };
+
+                root.TraverseChildren((node) =>
+                {
+                    if (blacklist.Contains(node.Key)) return;
+                    node.Insert((Key: 'ー', Value: TranslateLongVowel(node)));
+                });
+            }
         }
 
-        return trie;
+        trie.Merge(romajiTrie);
     }
 
-    static Trie<char, string> BuildKatakanaTree()
+    private void BuildKatakanaRomajiTree(MyTrie trie)
     {
-        var trie = new Trie<char, string>();
-        var root = trie.Root;
+        var romajiTrie = new MyInMemoryTrie();
+        var root = romajiTrie.Root;
 
-        root.Insert(('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
-                    ('カ', "ka"), ('キ', "ki"), ('ク', "ku"), ('ケ', "ke"), ('コ', "ko"),
-                    ('サ', "sa"), ('シ', "shi"), ('ス', "su"), ('セ', "se"), ('ソ', "so"),
-                    ('タ', "ta"), ('チ', "chi"), ('ツ', "tsu"), ('テ', "te"), ('ト', "to"),
-                    ('ナ', "na"), ('ニ', "ni"), ('ヌ', "nu"), ('ネ', "ne"), ('ノ', "no"),
-                    ('ハ', "ha"), ('ヒ', "hi"), ('フ', "fu"), ('ヘ', "he"), ('ホ', "ho"),
-                    ('マ', "ma"), ('ミ', "mi"), ('ム', "mu"), ('メ', "me"), ('モ', "mo"),
-                    ('ヤ', "ya"), ('ユ', "yu"), ('ヨ', "yo"),
-                    ('ラ', "ra"), ('リ', "ri"), ('ル', "ru"), ('レ', "re"), ('ロ', "ro"),
-                    ('ワ', "wa"), ('ヲ', "wo"),
-                    ('ン', "n"),
-                    ('ガ', "ga"), ('ギ', "gi"), ('グ', "gu"), ('ゲ', "ge"), ('ゴ', "go"),
-                    ('ザ', "za"), ('ジ', "ji"), ('ズ', "zu"), ('ゼ', "ze"), ('ゾ', "zo"),
-                    ('ダ', "da"), ('ヂ', "ji"), ('ヅ', "zu"), ('デ', "de"), ('ド', "do"),
-                    ('バ', "ba"), ('ビ', "bi"), ('ブ', "bu"), ('ベ', "be"), ('ボ', "bo"),
-                    ('パ', "pa"), ('ピ', "pi"), ('プ', "pu"), ('ペ', "pe"), ('ポ', "po"),
-                    ('ァ', "a"), ('ィ', "i"), ('ゥ', "u"), ('ェ', "e"), ('ォ', "o"),
-                    ('ャ', "ya"), ('ュ', "yu"), ('ョ', "yo"));
+        root.Insert(
+            ('ア', "a"), ('イ', "i"), ('ウ', "u"), ('エ', "e"), ('オ', "o"),
+            ('カ', "ka"), ('キ', "ki"), ('ク', "ku"), ('ケ', "ke"), ('コ', "ko"),
+            ('サ', "sa"), ('シ', "shi"), ('ス', "su"), ('セ', "se"), ('ソ', "so"),
+            ('タ', "ta"), ('チ', "chi"), ('ツ', "tsu"), ('テ', "te"), ('ト', "to"),
+            ('ナ', "na"), ('ニ', "ni"), ('ヌ', "nu"), ('ネ', "ne"), ('ノ', "no"),
+            ('ハ', "ha"), ('ヒ', "hi"), ('フ', "fu"), ('ヘ', "he"), ('ホ', "ho"),
+            ('マ', "ma"), ('ミ', "mi"), ('ム', "mu"), ('メ', "me"), ('モ', "mo"),
+            ('ヤ', "ya"), ('ユ', "yu"), ('ヨ', "yo"),
+            ('ラ', "ra"), ('リ', "ri"), ('ル', "ru"), ('レ', "re"), ('ロ', "ro"),
+            ('ワ', "wa"), ('ヲ', "wo"),
+            ('ン', "n"),
+            ('ガ', "ga"), ('ギ', "gi"), ('グ', "gu"), ('ゲ', "ge"), ('ゴ', "go"),
+            ('ザ', "za"), ('ジ', "ji"), ('ズ', "zu"), ('ゼ', "ze"), ('ゾ', "zo"),
+            ('ダ', "da"), ('ヂ', "ji"), ('ヅ', "zu"), ('デ', "de"), ('ド', "do"),
+            ('バ', "ba"), ('ビ', "bi"), ('ブ', "bu"), ('ベ', "be"), ('ボ', "bo"),
+            ('パ', "pa"), ('ピ', "pi"), ('プ', "pu"), ('ペ', "pe"), ('ポ', "po"),
+            ('ァ', "a"), ('ィ', "i"), ('ゥ', "u"), ('ェ', "e"), ('ォ', "o"),
+            ('ャ', "ya"), ('ュ', "yu"), ('ョ', "yo")
+        );
 
         {
             var whitelist = new[] { 'キ', 'ニ', 'ヒ', 'ミ', 'リ', 'ギ', 'ビ', 'ピ' };
@@ -221,13 +240,13 @@ public class HepburnRomajiConverter : RomajiConverter
             var sokuon = root.Insert(('ッ', ""));
             var exceptions = new[]
             {
-                    'ア', 'イ', 'ウ', 'エ', 'オ',
-                    'ヤ', 'ユ', 'ヨ',
-                    'ン',
-                    'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
-                    'ャ', 'ュ', 'ョ',
-                    'ッ'
-                };
+                'ア', 'イ', 'ウ', 'エ', 'オ',
+                'ヤ', 'ユ', 'ヨ',
+                'ン',
+                'ァ', 'ィ', 'ゥ', 'ェ', 'ォ',
+                'ャ', 'ュ', 'ョ',
+                'ッ'
+            };
 
             foreach (var child in root.Where((node) => !exceptions.Contains(node.Key)))
             {
@@ -254,48 +273,24 @@ public class HepburnRomajiConverter : RomajiConverter
                 root.TraverseChildren((node) =>
                 {
                     if (blacklist.Contains(node.Key)) return;
-
-                    var value = node.Value;
-
-                    node.Insert((Key: 'ー', Value: value + value[^1]));
+                    node.Insert((Key: 'ー', Value: TranslateLongVowel(node)));
                 });
             }
         }
 
-        return trie;
+        trie.Merge(romajiTrie);
     }
 
-    static HepburnRomajiConverter()
+    protected override void BuildRomajiTree(MyTrie trie)
     {
-        var hiraganaTree = BuildHiraganaTree();
-        var katakanaTree = BuildKatakanaTree();
-        var kanaTree = Trie<char, string>.Merge(hiraganaTree, katakanaTree, (a, b) => b.Value);
-
-        var root = RomajiTree.Root;
-
-        root.Insert(('。', "."),
-                    ('、', ","),
-                    ('：', ":"),
-                    ('・', "/"),
-                    ('！', "!"),
-                    ('？', "?"),
-                    ('〜', "~"),
-                    ('ー', "-"),
-                    ('「', "‘"),
-                    ('」', "’"),
-                    ('『', "“"),
-                    ('』', "”"),
-                    ('［', "["),
-                    ('］', "]"),
-                    ('（', "("),
-                    ('）', ")"),
-                    ('｛', "{"),
-                    ('｝', "}"),
-                    ('　', " "));
-
-        RomajiTree.Merge(kanaTree, (a, b) => b.Value);
+        BuildHiraganaRomajiTree(trie);
+        BuildKatakanaRomajiTree(trie);
     }
 
-    protected override Trie<char, string> GetTrie() => RomajiTree;
+    protected override void BuildKanaTree(MyTrie trie) { }
 
+    public override string ToKana(string input, bool useObsoleteKana, MyTrie? customKanaMapping = null)
+    {
+        throw new NotImplementedException($"{nameof(ToKana)} is currently not implemented for {nameof(HepburnConverter)}.");
+    }
 }
