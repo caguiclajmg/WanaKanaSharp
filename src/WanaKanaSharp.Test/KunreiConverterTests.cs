@@ -7,7 +7,7 @@ namespace WanaKanaSharp.Test;
 [TestFixture]
 public class KunreiConverterTests
 {
-    private readonly HepburnConverter _converter = new();
+    private readonly KunreiConverter _converter = new();
 
     [TestCase(null, ExpectedResult = "")]
     [TestCase("", ExpectedResult = "")]

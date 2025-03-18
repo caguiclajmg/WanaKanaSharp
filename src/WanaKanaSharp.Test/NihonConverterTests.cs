@@ -7,7 +7,7 @@ namespace WanaKanaSharp.Test;
 [TestFixture]
 public class NihonConverterTests
 {
-    private readonly HepburnConverter _converter = new();
+    private readonly NihonConverter _converter = new();
 
     [TestCase(null, ExpectedResult = "")]
     [TestCase("", ExpectedResult = "")]
@@ -38,7 +38,7 @@ public class NihonConverterTests
     [TestCase("ぉ", ExpectedResult = "o")]
     [TestCase("おんよみ", ExpectedResult = "on'yomi")]
     [TestCase("んよ んあ んゆ", ExpectedResult = "n'yo n'a n'yu")]
-    [TestCase("シンヨ", ExpectedResult = "shin'yo")]
+    [TestCase("シンヨ", ExpectedResult = "sin'yo")]
     [TestCase("ふフ", ExpectedResult = "huhu")]
     [TestCase("ふとん", ExpectedResult = "huton")]
     [TestCase("フリー", ExpectedResult = "hurii")]

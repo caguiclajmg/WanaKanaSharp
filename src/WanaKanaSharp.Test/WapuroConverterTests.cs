@@ -34,7 +34,7 @@ namespace WanaKanaSharp.Test;
 [TestFixture]
 public class WapuroConverterTests
 {
-    private readonly HepburnConverter _converter = new();
+    private readonly WapuroConverter _converter = new();
 
     [TestCase(null, ExpectedResult = "")]
     [TestCase("", ExpectedResult = "")]
